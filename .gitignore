@@ -1,0 +1,10 @@
+.DS_Store
+*.scad~
+*.autosave
+
+# Large downloaded vendor packages remain local. Track their URLs in SOURCES.md.
+project_files/**/references/vendor/
+
+# Reproducible research/rendering scratch files remain local.
+project_files/**/process/research_tmp/
+
