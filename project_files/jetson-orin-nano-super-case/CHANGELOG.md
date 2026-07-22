@@ -1,5 +1,12 @@
 # Change log
 
+## 2026-07-22 - Photo-verified rear clearance correction
+
+- Recentered and widened the rear header service opening from PCB-local X=15-69 mm to X=11-89 mm after reviewing physical rear/top photographs.
+- Moved the two 6.17 mm antenna holes outward from X=18/82 mm to X=11/89 mm and raised their centers by 3 mm.
+- Added a conservative 10 mm antenna nut/washer keep-out and assertions that it clears the heatsink envelope and retains at least 3 mm of solid wall above the rear opening.
+- Added a dedicated rear-review preview orientation.
+
 ## 2026-07-22 - Physical-board front-I/O correction
 
 - Corrected the DC barrel jack from the left wall to the far-left position on the front wall after checking the user's physical-board photograph.

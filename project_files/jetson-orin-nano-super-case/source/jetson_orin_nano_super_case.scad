@@ -16,7 +16,7 @@
  * - Rear wall thickness: 2.7 mm
  * - Two rear bulkhead antenna holes: diameter 6.17 mm
  *
- * Select one of: "print_set", "base", "lid", "assembly", "mockup".
+ * Select one of: "print_set", "base", "lid", "assembly", "rear_review", "mockup".
  */
 
 part = "print_set";
@@ -111,15 +111,23 @@ csi_window_z0 = pcb_bottom_z - 0.50;
 csi_window_z1 = pcb_top_z + 15.5;
 
 // Rear service window for the horizontal button/CAN/header region.
-rear_service_x0 = pcb_origin[0] + 15.0;
-rear_service_x1 = pcb_origin[0] + 69.0;
+// Physical-board rear/top photographs show that this row spans the central rear edge.
+rear_service_x0 = pcb_origin[0] + 11.0;
+rear_service_x1 = pcb_origin[0] + 89.0;
 rear_service_z0 = pcb_bottom_z - 0.50;
 rear_service_z1 = pcb_top_z + 9.5;
 
-// User-specified rear bulkhead antenna holes, placed on opposite fan sides.
+// User-specified rear bulkhead antenna holes, moved outside the conservative heatsink
+// envelope after checking the physical-board photographs. A 10 mm hardware keep-out
+// represents the nut/washer around each exact 6.17 mm through-hole.
 antenna_hole_d = 6.17;
-antenna_centers_x = [pcb_origin[0] + 18.0, pcb_origin[0] + 82.0];
-antenna_center_z = pcb_top_z + 15.0;
+antenna_hardware_keepout_d = 10.0;
+antenna_centers_x = [pcb_origin[0] + 11.0, pcb_origin[0] + 89.0];
+antenna_center_z = pcb_top_z + 18.0;
+
+// Conservative top-cooling envelope used for rear bulkhead collision checks.
+heatsink_envelope_x0 = fan_center[0] - 31.5;
+heatsink_envelope_x1 = fan_center[0] + 31.5;
 
 // Top-right cable exit above the right-side 40-pin/ribbon breakout region.
 ribbon_exit_x0 = pcb_origin[0] + 87.5;
@@ -138,6 +146,12 @@ assert(abs(case_top_z - fan_top_z) < 0.001,
 assert(abs(fan_opening[0] - 35.60) < 0.001 &&
        abs(fan_opening[1] - 35.60) < 0.001,
        "Top opening must expose the complete square stock fan, not only the blades");
+assert(antenna_centers_x[0] + antenna_hardware_keepout_d / 2 <= heatsink_envelope_x0,
+       "Left antenna nut/washer keep-out must clear the heatsink envelope");
+assert(antenna_centers_x[1] - antenna_hardware_keepout_d / 2 >= heatsink_envelope_x1,
+       "Right antenna nut/washer keep-out must clear the heatsink envelope");
+assert(antenna_center_z - antenna_hardware_keepout_d / 2 - rear_service_z1 >= 3.0,
+       "Antenna hardware needs at least 3 mm of solid wall above the rear service opening");
 
 module rounded_rect_2d(size, radius) {
     rr = min(radius, min(size[0], size[1]) / 2);
@@ -339,6 +353,13 @@ module assembled_view() {
     color([0.12, 0.22, 0.34, 0.62]) lid_assembled();
 }
 
+module rear_review_view() {
+    // Rotate the assembled model so the rear wall faces the standard preview camera.
+    translate([outer_size[0], outer_size[1], 0])
+        rotate([0, 0, 180])
+            assembled_view();
+}
+
 module lid_print_orientation() {
     // Exterior roof lies on the print bed; posts and walls grow upward without support.
     translate([0, outer_size[1], case_top_z])
@@ -358,6 +379,8 @@ if (part == "base") {
     lid_print_orientation();
 } else if (part == "assembly") {
     assembled_view();
+} else if (part == "rear_review") {
+    rear_review_view();
 } else if (part == "mockup") {
     developer_kit_mockup();
 } else {

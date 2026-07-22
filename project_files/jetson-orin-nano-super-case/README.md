@@ -7,6 +7,7 @@ This directory contains a parameterized, full six-face OpenSCAD enclosure for th
 - `source/jetson_orin_nano_super_case.scad` - editable source model
 - `../../current_stl/jetson_orin_nano_super_case_print_set.stl` - current base and lid in one print-ready STL
 - `process/previews/jetson_orin_nano_super_case_v2_assembly.png` - assembled preview
+- `process/previews/jetson_orin_nano_super_case_v2_rear_review.png` - rear antenna/header clearance review
 - `process/previews/jetson_orin_nano_super_case_v2_print_set.png` - one-plate print preview
 - `CHANGELOG.md` - design change record
 - `SOURCES.md` - reproducible reference links
@@ -34,7 +35,7 @@ With the front I/O facing the user, X runs left-to-right and Y runs front-to-bac
 
 - Front: separate local windows for the DC barrel jack, DisplayPort, the four USB-A ports, and the adjacent RJ45/USB-C region. The order and edge assignment were cross-checked against a user-supplied physical-board photo. The windows include clearance for molded cable plugs but do not remove the entire wall.
 - Left: a large service window for both CSI ribbon connectors and their locking tabs; there is no DC opening on this wall.
-- Rear: a low service window for the horizontal header region plus two opposite-side 6.17 mm antenna bulkhead holes.
+- Rear: a centered 78 mm wide low service window covers the horizontal header region. Two opposite-side 6.17 mm antenna bulkhead holes sit at PCB-local X=11 and 89 mm, outside the conservative heatsink envelope.
 - Right: the wall remains closed.
 - Top: the complete stock fan is exposed through a close-fitting square opening, and a rectangular top-right exit serves the right-side ribbon/40-pin region.
 - Bottom: fully closed.
@@ -46,6 +47,8 @@ The exterior top surface and stock-fan top share the exact same Z plane, 30.50 m
 Four solid 2.35 mm base pegs grow from 6.4 mm PCB-support shoulders. The pegs pass upward through the official 2.75 mm PCB holes. Four long lid posts contain 2.70 mm blind sockets that slide over the peg ends. Add a small amount of suitable adhesive inside the blind sockets after the fit has been checked.
 
 There are no opposing screws and no exterior screw holes. If later disassembly is required, cut the glued printed joint rather than forcing the PCB.
+
+The rear antenna centers sit 18 mm above the PCB top. The model reserves a 10 mm diameter nut/washer keep-out around each hole, keeps that hardware outside the conservative heatsink envelope, and leaves at least 3 mm of solid rear wall above the header opening.
 
 ## OpenSCAD use
 
