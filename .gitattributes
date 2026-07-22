@@ -9,3 +9,5 @@
 *.alg binary
 *.art binary
 
+# Generated offline browser bundle; review the source in model_viewer/app/src/.
+model_viewer/app/viewer.bundle.js -diff linguist-generated=true

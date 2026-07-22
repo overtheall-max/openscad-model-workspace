@@ -8,3 +8,7 @@ project_files/**/references/vendor/
 # Reproducible research/rendering scratch files remain local.
 project_files/**/process/research_tmp/
 
+# Local web-viewer build dependencies; the compiled offline bundle is tracked.
+model_viewer/app/node_modules/
+model_viewer/app/__pycache__/
+model_viewer/app/*.pyc

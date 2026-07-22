@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>OpenSCAD 实时模型查看器</title>
+  <link rel="stylesheet" href="app/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <main class="viewer" aria-label="三维模型预览">
+      <header class="viewer-toolbar">
+        <div class="viewer-title">
+          <span class="eyebrow">OPENSCAD WORKSPACE</span>
+          <div class="title-row">
+            <h1 id="active-model-name">模型查看器</h1>
+            <span id="model-status" class="status-badge status-idle">等待连接</span>
+          </div>
+        </div>
+        <div class="view-actions" aria-label="视图控制">
+          <button id="toggle-wireframe" class="quiet-button" type="button" aria-pressed="false">线框</button>
+          <button id="reset-camera" class="quiet-button" type="button">适合窗口</button>
+        </div>
+      </header>
+
+      <div id="canvas-wrap" class="canvas-wrap">
+        <canvas id="model-canvas" aria-label="可旋转的三维模型"></canvas>
+        <div class="interaction-hint" aria-hidden="true">左键旋转 · 右键平移 · 滚轮缩放</div>
+        <div id="grid-label" class="grid-label" hidden>单位：mm</div>
+        <div id="empty-state" class="empty-state">
+          <div class="empty-mark" aria-hidden="true">3D</div>
+          <h2>连接模型工作区</h2>
+          <p>选择包含 current_stl、historical_stl 和 README.md 的 OpenSCAD 根目录。</p>
+          <button id="connect-workspace-main" class="primary-button" type="button">选择工作区</button>
+        </div>
+        <div id="loading-state" class="loading-state" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span>正在读取模型…</span>
+        </div>
+      </div>
+
+      <footer class="model-statusbar" aria-live="polite">
+        <span id="status-format">—</span>
+        <span id="status-dimensions">尺寸 —</span>
+        <span id="status-triangles">面数 —</span>
+        <span id="status-size">大小 —</span>
+        <span id="status-updated">更新时间 —</span>
+        <span id="status-live" class="live-state">自动刷新未连接</span>
+      </footer>
+    </main>
+
+    <aside class="sidebar" aria-label="模型选择与导出">
+      <section class="sidebar-head">
+        <div>
+          <span class="eyebrow">LIBRARY</span>
+          <h2>模型文件</h2>
+        </div>
+        <button id="refresh-models" class="icon-button" type="button" aria-label="重新读取模型文件">刷新</button>
+      </section>
+
+      <section class="workspace-block" aria-label="工作区">
+        <button id="connect-workspace" class="path-button" type="button">
+          <span class="field-label">工作区</span>
+          <span id="workspace-name" class="path-value">尚未选择</span>
+        </button>
+        <p id="workspace-hint" class="field-hint">首次使用需要允许浏览器读取模型目录。</p>
+        <input id="workspace-fallback" type="file" webkitdirectory multiple hidden>
+      </section>
+
+      <nav id="model-list" class="model-list" aria-label="可用模型">
+        <p class="list-placeholder">连接工作区后，这里会自动读取当前与历史模型。</p>
+      </nav>
+
+      <section class="export-panel" aria-label="导出所选模型">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">COPY</span>
+            <h2>导出模型</h2>
+          </div>
+        </div>
+        <button id="choose-destination" class="path-button" type="button">
+          <span class="field-label">导出位置</span>
+          <span id="destination-name" class="path-value">点击选择文件夹</span>
+        </button>
+        <p id="destination-hint" class="field-hint">系统位置选择器可以访问外置硬盘和 U 盘。</p>
+        <button id="export-model" class="primary-button full-width" type="button" disabled>导出所选模型</button>
+      </section>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="app/viewer.bundle.js"></script>
+</body>
+</html>
