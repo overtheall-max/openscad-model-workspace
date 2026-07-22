@@ -52,9 +52,9 @@ CHANGELOG.md           人类可读的改动记录
 ### 4. `model_viewer/`
 
 - 根部只能放 `index.html`；查看器的脚本、样式、配置、构建文件和本机辅助程序全部放入 `model_viewer/app/`。
-- 默认读取 `current_stl/`，其次读取 `historical_stl/<project-slug>/`；当前文件显示“正在制作”，历史文件显示“制作完成”。
+- 默认读取 `current_stl/`，其次读取 `historical_stl/<project-slug>/`。`current_stl/` 表示当前项目，不再等同于“正在制作”；当前项目阶段由 `model_viewer/app/config.json` 的 `projectStatus` 决定，历史文件固定显示“制作完成”。
 - 当前模型文件被同名覆盖后，查看器必须自动重新加载，不得依赖版本号文件名。
-- `model_viewer/app/config.json` 记录当前项目的 SCAD 源码、输出 STL 和 OpenSCAD `-D` 参数。切换项目或调整输出零件时必须同步更新。
+- `model_viewer/app/config.json` 记录当前项目阶段、SCAD 源码、输出 STL 和 OpenSCAD `-D` 参数。`projectStatus` 仅允许使用 `working` 或 `completed`；切换项目、开始修改、完成定稿或调整输出零件时必须同步更新。
 - Safari 完整模式通过 `model_viewer/app/open-in-safari.command` 启动，只监听本机回环地址；使用 macOS 原生目录选择器完成 U 盘或外置硬盘导出。
 - 直接打开 `index.html` 时，Chrome 可使用浏览器目录读写接口；Safari/Firefox 只能使用兼容读取和普通下载。
 - 支持的查看格式至少包括 STL 与 3MF；当前实现还支持 OBJ、PLY、AMF 和 GLB。
@@ -70,21 +70,22 @@ CHANGELOG.md           人类可读的改动记录
 4. 将 `current_stl/` 中全部 STL **移动**到该历史项目子文件夹，不复制。
 5. 在 `project_files/<新项目 slug>/` 创建源码、资料和过程目录。
 6. 把本文件的 `CURRENT_PROJECT` 更新为新项目 slug。
-7. 更新 `model_viewer/app/config.json`，使自动导出指向新项目源码和固定 STL 文件名。
+7. 更新 `model_viewer/app/config.json`，把 `projectStatus` 设为 `working`，并使自动导出指向新项目源码和固定 STL 文件名。
 8. 完成新项目首个可用版本后，将最新 STL 导出到 `current_stl/`。
-9. 在 Safari 完整模式或 Chrome 中确认查看器默认打开新项目且状态为“正在制作”。
+9. 在 Safari 完整模式或 Chrome 中确认查看器默认打开新项目且项目阶段为“正在制作”。
 10. 更新项目 `CHANGELOG.md`，然后创建一次聚焦的 Git 提交。
 
 如果当前项目还没有任何 STL，仍应创建其项目资料目录和变更记录，但无需创建空的历史项目子文件夹。
 
 ## 更新当前项目设计时
 
-1. 只编辑 `project_files/<CURRENT_PROJECT>/source/` 中的源文件。
+1. 开始修改前把 `model_viewer/app/config.json` 的 `projectStatus` 设为 `working`，然后只编辑 `project_files/<CURRENT_PROJECT>/source/` 中的源文件。
 2. 先生成预览并检查尺寸、装配间隙和流形状态。
 3. 使用固定文件名覆盖 `current_stl/` 中对应 STL。
 4. 在项目 `CHANGELOG.md` 中记录变更原因、尺寸变化和验证结果。
-5. 用 `git diff --stat`、`git status --short` 检查范围。
-6. 提交源码、改动记录、必要预览和同名更新后的 STL。
+5. 完成验证并确认定稿后，把 `projectStatus` 设为 `completed`；若仍需修改则保持 `working`。
+6. 用 `git diff --stat`、`git status --short` 检查范围。
+7. 提交源码、改动记录、必要预览和同名更新后的 STL。
 
 使用 Safari 完整模式时，保存 SCAD 后会自动按 `model_viewer/app/config.json` 重新导出；必须观察页面状态栏并确认导出完成。直接打开 HTML 时，页面只能自动刷新已被 OpenSCAD 或命令行覆盖的 STL，不能自行启动系统程序。
 

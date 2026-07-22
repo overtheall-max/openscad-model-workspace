@@ -10,6 +10,13 @@
 4. 导出位置使用 macOS 原生 Finder 对话框，可选择外置硬盘或 U 盘。
 5. 保持启动后出现的终端窗口开启；关闭窗口或按 Control-C 即停止服务。
 
+顶部标签显示项目阶段，底部状态栏显示与 OpenSCAD 的实时导出状态，两者互不混用：
+
+- `config.json` 中 `projectStatus: "working"`：当前项目显示“正在制作”。
+- `config.json` 中 `projectStatus: "completed"`：当前项目显示“制作完成”。
+- 本机辅助服务会另外报告“正在重新导出”“已与 OpenSCAD 同步”或“自动导出失败”。
+- OpenSCAD 只能判断一次导出是否成功；设计是否定稿必须通过 `projectStatus` 明确声明。
+
 ### 仅打开 HTML
 
 也可以直接双击上一级的 `index.html`：
@@ -51,4 +58,4 @@ npm run build
 
 提交 `viewer.bundle.js`，不要提交 `node_modules/`。页面使用固定依赖版本构建，运行时不需要联网。
 
-每次切换当前项目时，负责建模的 Agent 必须同步更新 `config.json` 中的 OpenSCAD 源文件、输出文件和 `-D` 参数映射。
+每次切换当前项目时，负责建模的 Agent 必须同步更新 `config.json` 中的 `projectStatus`、OpenSCAD 源文件、输出文件和 `-D` 参数映射。新项目或继续修改时设为 `working`，完成验证并定稿后设为 `completed`。

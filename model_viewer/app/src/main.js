@@ -53,6 +53,7 @@ const state = {
   activeRecord: null,
   activeSignature: "",
   currentProject: "current-project",
+  currentProjectStatus: "working",
   wireframe: false,
   scanInProgress: false,
   toastTimer: null,
@@ -283,6 +284,7 @@ async function useFallbackFiles(event) {
 
   state.workspaceHandle = null;
   state.fallbackFiles = files;
+  state.currentProjectStatus = "working";
   const rootReadme = files.find((file) => {
     const parts = (file.webkitRelativePath || file.name).split("/").filter(Boolean);
     return file.name === "README.md" && parts.length <= 2;
@@ -291,6 +293,18 @@ async function useFallbackFiles(event) {
     const text = await rootReadme.text();
     const match = text.match(/CURRENT_PROJECT:\s*([^`\s]+)/);
     if (match?.[1]) state.currentProject = match[1];
+  }
+  const viewerConfig = files.find((file) => {
+    const path = (file.webkitRelativePath || file.name).replaceAll("\\", "/");
+    return path.endsWith("/model_viewer/app/config.json");
+  });
+  if (viewerConfig) {
+    try {
+      const config = JSON.parse(await viewerConfig.text());
+      state.currentProjectStatus = normalizeProjectStatus(config.projectStatus);
+    } catch {
+      state.currentProjectStatus = "working";
+    }
   }
   const firstPath = files[0].webkitRelativePath || files[0].name;
   elements.workspaceName.textContent = firstPath.split("/")[0] || "已选择目录";
@@ -311,6 +325,7 @@ async function refreshWorkspace({ preserveSelection = true, forceReload = false,
     const result = await scanWorkspaceHandle(state.workspaceHandle);
     state.records = result.records;
     state.currentProject = result.currentProject;
+    state.currentProjectStatus = result.projectStatus;
     renderModelList();
 
     let nextRecord = previousId
@@ -330,6 +345,8 @@ async function refreshWorkspace({ preserveSelection = true, forceReload = false,
     } else {
       state.activeRecord = nextRecord;
       updateActiveListItem();
+      updateStatusHeader(nextRecord);
+      updateLiveStatus(nextRecord);
     }
   } catch (error) {
     if (!silent) {
@@ -354,6 +371,7 @@ async function refreshNativeWorkspace({ preserveSelection = true, forceReload = 
     if (!response.ok) throw new Error(`本机服务返回 ${response.status}`);
     const data = await response.json();
     state.currentProject = data.currentProject || "current-project";
+    state.currentProjectStatus = normalizeProjectStatus(data.projectStatus);
     state.watcherStatus = data.watcher || null;
     state.records = (data.models || []).map((record) => ({
       ...record,
@@ -381,6 +399,7 @@ async function refreshNativeWorkspace({ preserveSelection = true, forceReload = 
     } else {
       state.activeRecord = nextRecord;
       updateActiveListItem();
+      updateStatusHeader(nextRecord);
       updateLiveStatus(nextRecord);
     }
   } catch (error) {
@@ -396,6 +415,7 @@ async function refreshNativeWorkspace({ preserveSelection = true, forceReload = 
 
 async function scanWorkspaceHandle(rootHandle) {
   const currentProject = await readCurrentProject(rootHandle);
+  const projectStatus = await readProjectStatus(rootHandle);
   const records = [];
   const currentDirectory = await getOptionalDirectory(rootHandle, "current_stl");
   const historyDirectory = await getOptionalDirectory(rootHandle, "historical_stl");
@@ -424,7 +444,7 @@ async function scanWorkspaceHandle(rootHandle) {
   }
 
   sortRecords(records);
-  return { records, currentProject };
+  return { records, currentProject, projectStatus };
 }
 
 async function collectHandleModels({ directory, pathParts, records, status, project }) {
@@ -523,6 +543,18 @@ async function readCurrentProject(rootHandle) {
   }
 }
 
+async function readProjectStatus(rootHandle) {
+  try {
+    const viewerDirectory = await rootHandle.getDirectoryHandle("model_viewer");
+    const appDirectory = await viewerDirectory.getDirectoryHandle("app");
+    const configHandle = await appDirectory.getFileHandle("config.json");
+    const config = JSON.parse(await (await configHandle.getFile()).text());
+    return normalizeProjectStatus(config.projectStatus);
+  } catch {
+    return "working";
+  }
+}
+
 async function getOptionalDirectory(parent, name) {
   try {
     return await parent.getDirectoryHandle(name);
@@ -547,7 +579,8 @@ function renderModelList() {
   }
 
   if (currentRecords.length) {
-    elements.modelList.append(createGroup("正在制作", currentRecords, false));
+    const currentLabel = projectStatusLabel(state.currentProjectStatus);
+    elements.modelList.append(createGroup(`当前项目 · ${currentLabel}`, currentRecords, false));
   }
 
   if (historyRecords.length) {
@@ -818,9 +851,10 @@ function toggleWireframe() {
 }
 
 function updateStatusHeader(record) {
+  const lifecycleStatus = record.status === "done" ? "completed" : state.currentProjectStatus;
   elements.activeName.textContent = stripExtension(record.name);
-  elements.modelStatus.textContent = record.status === "working" ? "正在制作" : "制作完成";
-  elements.modelStatus.className = `status-badge ${record.status === "working" ? "status-working" : "status-done"}`;
+  elements.modelStatus.textContent = projectStatusLabel(lifecycleStatus);
+  elements.modelStatus.className = `status-badge ${lifecycleStatus === "working" ? "status-working" : "status-done"}`;
 }
 
 function updateFileStatus(record, file) {
@@ -840,12 +874,14 @@ function updateFileStatus(record, file) {
 
 function updateLiveStatus(record) {
   const live = record.status === "working" && (record.handle || record.native);
-  if (record.native && state.watcherStatus?.state === "rendering") {
+  if (record.native && live && state.watcherStatus?.state === "rendering") {
     elements.statusLive.textContent = "● OpenSCAD 正在重新导出";
-  } else if (record.native && state.watcherStatus?.state === "error") {
+  } else if (record.native && live && state.watcherStatus?.state === "error") {
     elements.statusLive.textContent = "OpenSCAD 自动导出失败";
   } else if (record.native && live) {
-    elements.statusLive.textContent = "● OpenSCAD 自动导出与刷新已开启";
+    elements.statusLive.textContent = state.watcherStatus?.enabled
+      ? "● 已与 OpenSCAD 同步"
+      : "● 模型文件自动刷新已开启";
   } else if (live) {
     elements.statusLive.textContent = "● 文件自动刷新已开启";
   } else {
@@ -1047,6 +1083,16 @@ function fileSignature(record) {
 function getExtension(name) {
   const index = name.lastIndexOf(".");
   return index >= 0 ? name.slice(index + 1).toLowerCase() : "";
+}
+
+function normalizeProjectStatus(value) {
+  return ["completed", "complete", "done"].includes(String(value || "").trim().toLowerCase())
+    ? "completed"
+    : "working";
+}
+
+function projectStatusLabel(status) {
+  return normalizeProjectStatus(status) === "completed" ? "制作完成" : "正在制作";
 }
 
 function stripExtension(name) {

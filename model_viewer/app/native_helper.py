@@ -51,6 +51,11 @@ def read_current_project() -> str:
     return value or "current-project"
 
 
+def read_project_status() -> str:
+    value = str(load_config().get("projectStatus", "working")).strip().lower()
+    return "completed" if value in {"completed", "complete", "done"} else "working"
+
+
 def is_supported_model(path: Path) -> bool:
     return (
         path.is_file()
@@ -259,6 +264,7 @@ class ViewerRequestHandler(SimpleHTTPRequestHandler):
             self.send_json(
                 {
                     "currentProject": read_current_project(),
+                    "projectStatus": read_project_status(),
                     "models": scan_models(),
                     "watcher": watcher_snapshot(),
                 }
