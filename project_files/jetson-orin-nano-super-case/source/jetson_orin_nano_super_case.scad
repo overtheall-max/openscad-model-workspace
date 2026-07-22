@@ -54,9 +54,10 @@ pcb_origin = [wall + pcb_fit_clearance / 2, wall + pcb_fit_clearance / 2];
 pcb_bottom_z = floor_thickness + pcb_under_clearance;
 pcb_top_z = pcb_bottom_z + pcb_size[2];
 
-// The top exterior is flush with the stock fan top in the official STEP envelope.
+// The top exterior is exactly flush with the stock fan top in the official STEP envelope.
 fan_top_above_pcb_bottom = 30.50;
-case_top_z = pcb_bottom_z + fan_top_above_pcb_bottom;
+fan_top_z = pcb_bottom_z + fan_top_above_pcb_bottom;
+case_top_z = fan_top_z;
 top_inner_z = case_top_z - top_thickness;
 
 // The shells meet at a simple butt seam. Registration comes from the four peg joints.
@@ -93,17 +94,17 @@ mount_holes = [
 ];
 
 // Official P3768 front connector centers, converted to PCB-lower-left coordinates.
+// The physical-board photo confirms that J16 (DC) is also on this front edge.
 // Openings are intentionally larger than the receptacles to admit molded cable plugs.
 front_openings = [
     // center X, width, bottom Z, height
-    [22.760, 20.5, pcb_bottom_z - 0.50, 11.0],  // DisplayPort
+    [6.000, 11.0, pcb_bottom_z - 0.50, 13.5],  // DC barrel jack + molded plug
+    [22.760, 20.0, pcb_bottom_z - 0.50, 11.0],  // DisplayPort
     [51.100, 32.0, pcb_bottom_z - 0.50, 18.5],  // both stacked USB-A receptacles
     [84.050, 31.5, pcb_bottom_z - 0.50, 18.0]   // RJ45 latch + USB-C molded plug
 ];
 
-// Left-side service geometry: DC input near the front and two CSI connectors behind it.
-dc_window_center_y = pcb_origin[1] + 12.25;
-dc_window_size = [13.5, 13.5]; // Y by Z; admits the 5.5 mm barrel and molded plug body
+// Left-side service geometry for the two CSI connectors.
 csi_window_y0 = pcb_origin[1] + 25.0;
 csi_window_y1 = pcb_origin[1] + 69.0;
 csi_window_z0 = pcb_bottom_z - 0.50;
@@ -132,6 +133,11 @@ assert(lid_socket_d > base_peg_d, "Lid sockets need glue and print clearance");
 assert(base_peg_top_z < lid_post_bottom_z + lid_socket_depth,
        "Base pegs must fit inside the blind lid sockets");
 assert(case_top_z > pcb_top_z, "Case top must sit above the PCB");
+assert(abs(case_top_z - fan_top_z) < 0.001,
+       "Enclosure top must remain exactly flush with the stock fan top");
+assert(abs(fan_opening[0] - 35.60) < 0.001 &&
+       abs(fan_opening[1] - 35.60) < 0.001,
+       "Top opening must expose the complete square stock fan, not only the blades");
 
 module rounded_rect_2d(size, radius) {
     rr = min(radius, min(size[0], size[1]) / 2);
@@ -161,14 +167,6 @@ module front_service_cutouts() {
 }
 
 module left_service_cutouts() {
-    // DC jack and molded cable body.
-    translate([
-        -epsilon,
-        dc_window_center_y - dc_window_size[0] / 2,
-        pcb_bottom_z - 0.50
-    ])
-        cube([wall + 2 * epsilon, dc_window_size[0], dc_window_size[1]]);
-
     // One continuous service window gives fingers room to unlock and route both CSI FFCs.
     translate([-epsilon, csi_window_y0, csi_window_z0])
         cube([

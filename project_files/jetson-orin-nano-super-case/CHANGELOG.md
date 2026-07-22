@@ -1,5 +1,11 @@
 # Change log
 
+## 2026-07-22 - Physical-board front-I/O correction
+
+- Corrected the DC barrel jack from the left wall to the far-left position on the front wall after checking the user's physical-board photograph.
+- Confirmed the front order as DC, DisplayPort, two dual-stack USB-A blocks, RJ45, and USB-C.
+- Removed the erroneous left-wall DC opening while retaining the left CSI service opening.
+
 ## 2026-07-22 - Full six-face enclosure redesign
 
 - Replaced the opposing top/bottom M2.5 screw scheme with four solid through-PCB base pegs and four blind lid sockets intended for a dry fit followed by adhesive.

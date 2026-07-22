@@ -32,14 +32,14 @@ The main mounting-hole centers, expressed from the PCB lower-left corner, are:
 
 With the front I/O facing the user, X runs left-to-right and Y runs front-to-back:
 
-- Front: separate local windows for DisplayPort, the four USB-A ports, and the adjacent RJ45/USB-C region. The windows include clearance for molded cable plugs but do not remove the entire wall.
-- Left: a DC-jack opening and a large service window for both CSI ribbon connectors and their locking tabs.
+- Front: separate local windows for the DC barrel jack, DisplayPort, the four USB-A ports, and the adjacent RJ45/USB-C region. The order and edge assignment were cross-checked against a user-supplied physical-board photo. The windows include clearance for molded cable plugs but do not remove the entire wall.
+- Left: a large service window for both CSI ribbon connectors and their locking tabs; there is no DC opening on this wall.
 - Rear: a low service window for the horizontal header region plus two opposite-side 6.17 mm antenna bulkhead holes.
 - Right: the wall remains closed.
 - Top: the complete stock fan is exposed through a close-fitting square opening, and a rectangular top-right exit serves the right-side ribbon/40-pin region.
 - Bottom: fully closed.
 
-The exterior top surface is set flush with the stock fan top. The inner footprint adds only 0.30 mm clearance per PCB side.
+The exterior top surface and stock-fan top share the exact same Z plane, 30.50 mm above the PCB bottom in the model. The top opening is a 35.6 x 35.6 mm square around the complete approximately 35 x 35 mm fan body, rather than a circular blade-only opening. The inner footprint adds only 0.30 mm clearance per PCB side.
 
 ## Screwless assembly
 
