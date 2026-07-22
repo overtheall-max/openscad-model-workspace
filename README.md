@@ -51,11 +51,11 @@ CHANGELOG.md           人类可读的改动记录
 
 ### 4. `model_viewer/`
 
-- 根部只能放 `index.html`；查看器的脚本、样式、配置、构建文件和本机辅助程序全部放入 `model_viewer/app/`。
+- 根部只放面向用户的两个入口：`index.html` 和 `open-in-safari.command`；查看器的脚本、样式、配置、构建文件和本机辅助程序全部放入 `model_viewer/app/`。
 - 默认读取 `current_stl/`，其次读取 `historical_stl/<project-slug>/`。`current_stl/` 表示当前项目，不再等同于“正在制作”；当前项目阶段由 `model_viewer/app/config.json` 的 `projectStatus` 决定，历史文件固定显示“制作完成”。
 - 当前模型文件被同名覆盖后，查看器必须自动重新加载，不得依赖版本号文件名。
 - `model_viewer/app/config.json` 记录当前项目阶段、SCAD 源码、输出 STL 和 OpenSCAD `-D` 参数。`projectStatus` 仅允许使用 `working` 或 `completed`；切换项目、开始修改、完成定稿或调整输出零件时必须同步更新。
-- Safari 完整模式通过 `model_viewer/app/open-in-safari.command` 启动，只监听本机回环地址；使用 macOS 原生目录选择器完成 U 盘或外置硬盘导出。
+- Safari 完整模式通过与 HTML 并列的 `model_viewer/open-in-safari.command` 启动，只监听本机回环地址；使用 macOS 原生目录选择器完成 U 盘或外置硬盘导出。
 - 直接打开 `index.html` 时，Chrome 可使用浏览器目录读写接口；Safari/Firefox 只能使用兼容读取和普通下载。
 - 支持的查看格式至少包括 STL 与 3MF；当前实现还支持 OBJ、PLY、AMF 和 GLB。
 - `node_modules/` 不提交 Git；必须提交离线可运行的 `viewer.bundle.js`、防止浏览器复用旧 bundle 的 `loader.js`、依赖锁文件和源代码。
@@ -113,7 +113,7 @@ Git/GitHub 可以实现“工作区只显示最新版、旧版只存在历史记
 - 项目说明：`project_files/jetson-orin-nano-super-case/README.md`
 - 当前打印文件：`current_stl/`
 - 实时查看器：`model_viewer/index.html`
-- Safari 完整模式：`model_viewer/app/open-in-safari.command`
+- Safari 完整模式：`model_viewer/open-in-safari.command`
 
 ## 本机 OpenSCAD
 

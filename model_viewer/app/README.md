@@ -4,7 +4,7 @@
 
 ### Safari 完整模式（推荐）
 
-1. 双击 `open-in-safari.command`；它会启动本机辅助服务并自动打开 Safari。
+1. 双击上一级与 `index.html` 并列的 `open-in-safari.command`；它会启动本机辅助服务并自动打开 Safari。
 2. 页面会直接读取本仓库，默认打开最近更新的当前模型。
 3. 保存当前 OpenSCAD 源文件后，辅助服务会按照 `config.json` 自动重新导出 STL，页面随后自动刷新。
 4. 导出位置使用 macOS 原生 Finder 对话框，可选择外置硬盘或 U 盘。
