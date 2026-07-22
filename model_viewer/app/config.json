@@ -1,20 +1,14 @@
 {
-  "projectStatus": "completed",
+  "projectStatus": "working",
   "liveExport": {
     "enabled": true,
     "openscadExecutable": "/Applications/Utilities/OpenSCAD.app/Contents/MacOS/OpenSCAD",
     "source": "project_files/jetson-orin-nano-super-case/source/jetson_orin_nano_super_case.scad",
     "outputs": [
       {
-        "file": "current_stl/jetson_orin_nano_super_case_base.stl",
+        "file": "current_stl/jetson_orin_nano_super_case_print_set.stl",
         "defines": {
-          "part": "base"
-        }
-      },
-      {
-        "file": "current_stl/jetson_orin_nano_super_case_lid.stl",
-        "defines": {
-          "part": "lid"
+          "part": "print_set"
         }
       }
     ]

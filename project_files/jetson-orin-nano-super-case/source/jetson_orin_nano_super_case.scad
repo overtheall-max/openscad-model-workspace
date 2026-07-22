@@ -1,39 +1,40 @@
 /*
- * NVIDIA Jetson Orin Nano Super Developer Kit enclosure
+ * NVIDIA Jetson Orin Nano Super Developer Kit full enclosure
  *
- * Mechanical references:
+ * Orientation used throughout this file:
+ * - X: left to right while the front I/O faces the user
+ * - Y: front I/O to rear/fan side
+ * - Z: bottom to top
+ *
+ * Primary mechanical references:
  * - NVIDIA P3768 carrier board specification v1.3
- * - NVIDIA P3768 A04 Allegro / NC drill data
- * - NVIDIA P3766 developer kit STEP model (2023-03-20)
+ * - NVIDIA P3768 A04 Allegro board data
+ * - NVIDIA P3766 developer-kit STEP model (2023-03-20)
  *
- * Confirmed source dimensions (mm):
- * - PCB outline: 100 x 79
- * - Main NPTH mounting holes: diameter 2.75, pitch 92 x 58
- * - Complete developer-kit envelope: 103 x 90.5 x 34.77
- * - Fan assembly center in PCB coordinates: [48.132, 59.116]
+ * User-controlled dimensions:
+ * - Bare PCB: 100 x 79 mm
+ * - Rear wall thickness: 2.7 mm
+ * - Two rear bulkhead antenna holes: diameter 6.17 mm
  *
- * Select one of: "assembly", "base", "lid", "both", "mockup".
+ * Select one of: "print_set", "base", "lid", "assembly", "mockup".
  */
 
-part = "assembly";
+part = "print_set";
 
-$fn = 56;
-epsilon = 0.02;
+$fn = 64;
+epsilon = 0.04;
 
-// Printer / fit tuning
-xy_clearance = 1.5;
-wall = 2.4;
-floor_thickness = 2.4;
-lid_thickness = 2.4;
-corner_radius = 6.0;
-base_rim_height = 7.0;
-bottom_component_clearance = 5.2;
-lid_underside_z = 40.0;
-lid_skirt_drop = 5.0;
+// Printer and shell tuning
+pcb_fit_clearance = 0.60;       // total X/Y clearance around the official PCB
+wall = 2.70;                    // includes the explicitly required 2.7 mm rear wall
+floor_thickness = 2.40;
+top_thickness = 2.70;
+case_corner_radius = 4.50;
+print_gap = 12.0;
 
-// NVIDIA mechanical data
+// NVIDIA P3768 mechanical data
 pcb_size = [100.0, 79.0, 1.60];
-devkit_envelope = [103.0, 90.5, 34.77];
+pcb_under_clearance = 4.60;     // official 4.30 mm max + 0.30 mm print allowance
 mount_hole_d = 2.75;
 mount_holes_from_pcb_lower_left = [
     [4.0, 17.0],
@@ -42,38 +43,95 @@ mount_holes_from_pcb_lower_left = [
     [96.0, 75.0]
 ];
 
-// Case placement. The extra front allowance covers the connector overhang.
-case_size = [111.0, 98.5];
-pcb_lower_left = [5.5, 15.0];
-pcb_bottom_z = floor_thickness + bottom_component_clearance;
+// The PCB sits closely inside the enclosure, with symmetric print clearance.
+inner_size = [
+    pcb_size[0] + pcb_fit_clearance,
+    pcb_size[1] + pcb_fit_clearance
+];
+outer_size = [inner_size[0] + 2 * wall, inner_size[1] + 2 * wall];
+pcb_origin = [wall + pcb_fit_clearance / 2, wall + pcb_fit_clearance / 2];
+
+pcb_bottom_z = floor_thickness + pcb_under_clearance;
 pcb_top_z = pcb_bottom_z + pcb_size[2];
 
-// Derived from the official P3766 STEP assembly transforms.
+// The top exterior is flush with the stock fan top in the official STEP envelope.
+fan_top_above_pcb_bottom = 30.50;
+case_top_z = pcb_bottom_z + fan_top_above_pcb_bottom;
+top_inner_z = case_top_z - top_thickness;
+
+// The shells meet at a simple butt seam. Registration comes from the four peg joints.
+shell_seam_z = 10.00;
+base_wall_top_z = shell_seam_z;
+lid_wall_bottom_z = shell_seam_z;
+
+// Fan center is from the official P3766 STEP transform, relative to PCB lower-left.
 fan_center_from_pcb_lower_left = [48.132, 59.116];
 fan_center = [
-    pcb_lower_left[0] + fan_center_from_pcb_lower_left[0],
-    pcb_lower_left[1] + fan_center_from_pcb_lower_left[1]
+    pcb_origin[0] + fan_center_from_pcb_lower_left[0],
+    pcb_origin[1] + fan_center_from_pcb_lower_left[1]
 ];
-fan_opening = [42.0, 40.0];
-fan_opening_radius = 5.0;
+stock_fan_size = [35.0, 35.0];
+fan_window_clearance = 0.60;
+fan_opening = [
+    stock_fan_size[0] + fan_window_clearance,
+    stock_fan_size[1] + fan_window_clearance
+];
 
-// Fasteners: four M2.5 x 40 mm screws from the lid into the base pilots.
-standoff_od = 7.6;
-base_pilot_d = 2.10;
-lid_clearance_d = 2.90;
-lid_post_gap = 0.20;
-lid_post_length = lid_underside_z - pcb_top_z - lid_post_gap;
+// Screwless through-PCB registration and glue joint.
+standoff_d = 6.40;
+base_peg_d = 2.35;
+base_peg_above_pcb = 6.00;
+base_peg_top_z = pcb_top_z + base_peg_above_pcb;
+lid_post_d = 6.50;
+lid_post_bottom_z = pcb_top_z + 0.35;
+lid_socket_d = 2.70;
+lid_socket_depth = 7.00;
 
 mount_holes = [
     for (p = mount_holes_from_pcb_lower_left)
-        [pcb_lower_left[0] + p[0], pcb_lower_left[1] + p[1]]
+        [pcb_origin[0] + p[0], pcb_origin[1] + p[1]]
 ];
 
-assert(case_size[0] >= devkit_envelope[0] + 2 * xy_clearance,
-       "Case is too narrow for the official developer-kit envelope");
-assert(case_size[1] >= devkit_envelope[1] + 2 * xy_clearance,
-       "Case is too shallow for the official developer-kit envelope");
-assert(lid_post_length > 0, "Lid height must be above the PCB");
+// Official P3768 front connector centers, converted to PCB-lower-left coordinates.
+// Openings are intentionally larger than the receptacles to admit molded cable plugs.
+front_openings = [
+    // center X, width, bottom Z, height
+    [22.760, 20.5, pcb_bottom_z - 0.50, 11.0],  // DisplayPort
+    [51.100, 32.0, pcb_bottom_z - 0.50, 18.5],  // both stacked USB-A receptacles
+    [84.050, 31.5, pcb_bottom_z - 0.50, 18.0]   // RJ45 latch + USB-C molded plug
+];
+
+// Left-side service geometry: DC input near the front and two CSI connectors behind it.
+dc_window_center_y = pcb_origin[1] + 12.25;
+dc_window_size = [13.5, 13.5]; // Y by Z; admits the 5.5 mm barrel and molded plug body
+csi_window_y0 = pcb_origin[1] + 25.0;
+csi_window_y1 = pcb_origin[1] + 69.0;
+csi_window_z0 = pcb_bottom_z - 0.50;
+csi_window_z1 = pcb_top_z + 15.5;
+
+// Rear service window for the horizontal button/CAN/header region.
+rear_service_x0 = pcb_origin[0] + 15.0;
+rear_service_x1 = pcb_origin[0] + 69.0;
+rear_service_z0 = pcb_bottom_z - 0.50;
+rear_service_z1 = pcb_top_z + 9.5;
+
+// User-specified rear bulkhead antenna holes, placed on opposite fan sides.
+antenna_hole_d = 6.17;
+antenna_centers_x = [pcb_origin[0] + 18.0, pcb_origin[0] + 82.0];
+antenna_center_z = pcb_top_z + 15.0;
+
+// Top-right cable exit above the right-side 40-pin/ribbon breakout region.
+ribbon_exit_x0 = pcb_origin[0] + 87.5;
+ribbon_exit_y0 = pcb_origin[1] + 16.0;
+ribbon_exit_y1 = pcb_origin[1] + 69.0;
+
+assert(abs(wall - 2.70) < 0.001, "Rear wall must remain 2.7 mm");
+assert(abs(antenna_hole_d - 6.17) < 0.001, "Antenna holes must remain 6.17 mm");
+assert(base_peg_d < mount_hole_d, "Base pegs must pass through the PCB holes");
+assert(lid_socket_d > base_peg_d, "Lid sockets need glue and print clearance");
+assert(base_peg_top_z < lid_post_bottom_z + lid_socket_depth,
+       "Base pegs must fit inside the blind lid sockets");
+assert(case_top_z > pcb_top_z, "Case top must sit above the PCB");
 
 module rounded_rect_2d(size, radius) {
     rr = min(radius, min(size[0], size[1]) / 2);
@@ -87,58 +145,132 @@ module rounded_prism(size, height, radius) {
         rounded_rect_2d(size, radius);
 }
 
-module rounded_cutout(center, size, height, radius, z = 0) {
+module rounded_xy_cutout(center, size, height, radius, z) {
     translate([center[0] - size[0] / 2, center[1] - size[1] / 2, z])
         rounded_prism(size, height, radius);
 }
 
-module slot_cutout(center, length, width, height, z = 0) {
-    assert(length >= width, "Slot length must be at least its width");
-    translate([center[0] - length / 2 + width / 2, center[1], z])
-        hull() {
-            cylinder(h = height, d = width);
-            translate([length - width, 0, 0])
-                cylinder(h = height, d = width);
-        }
+module front_service_cutouts() {
+    for (opening = front_openings)
+        translate([
+            pcb_origin[0] + opening[0] - opening[1] / 2,
+            -epsilon,
+            opening[2]
+        ])
+            cube([opening[1], wall + 2 * epsilon, opening[3]]);
+}
+
+module left_service_cutouts() {
+    // DC jack and molded cable body.
+    translate([
+        -epsilon,
+        dc_window_center_y - dc_window_size[0] / 2,
+        pcb_bottom_z - 0.50
+    ])
+        cube([wall + 2 * epsilon, dc_window_size[0], dc_window_size[1]]);
+
+    // One continuous service window gives fingers room to unlock and route both CSI FFCs.
+    translate([-epsilon, csi_window_y0, csi_window_z0])
+        cube([
+            wall + 2 * epsilon,
+            csi_window_y1 - csi_window_y0,
+            csi_window_z1 - csi_window_z0
+        ]);
+}
+
+module rear_service_cutouts() {
+    // Low header-access window; material remains above it for the antenna bulkheads.
+    translate([
+        rear_service_x0,
+        outer_size[1] - wall - epsilon,
+        rear_service_z0
+    ])
+        cube([
+            rear_service_x1 - rear_service_x0,
+            wall + 2 * epsilon,
+            rear_service_z1 - rear_service_z0
+        ]);
+
+    // Exact user-specified holes through the 2.7 mm rear wall.
+    for (x = antenna_centers_x)
+        translate([x, outer_size[1] + epsilon, antenna_center_z])
+            rotate([90, 0, 0])
+                cylinder(h = wall + 2 * epsilon, d = antenna_hole_d);
+}
+
+module top_service_cutouts() {
+    // The whole square stock fan is exposed, with only 0.30 mm clearance per side.
+    rounded_xy_cutout(
+        fan_center,
+        fan_opening,
+        top_thickness + 2 * epsilon,
+        1.4,
+        top_inner_z - epsilon
+    );
+
+    // Vertical ribbon exit at the top-right edge.
+    exit_size = [
+        outer_size[0] - ribbon_exit_x0 + epsilon,
+        ribbon_exit_y1 - ribbon_exit_y0
+    ];
+    rounded_xy_cutout(
+        [ribbon_exit_x0 + exit_size[0] / 2, ribbon_exit_y0 + exit_size[1] / 2],
+        exit_size,
+        top_thickness + 2 * epsilon,
+        1.8,
+        top_inner_z - epsilon
+    );
+}
+
+module base_shell_body() {
+    difference() {
+        rounded_prism(outer_size, base_wall_top_z, case_corner_radius);
+
+        // Closed floor with a shallow wall rising just above PCB height.
+        translate([wall, wall, floor_thickness])
+            rounded_prism(
+                inner_size,
+                base_wall_top_z - floor_thickness + epsilon,
+                max(case_corner_radius - wall, 1.0)
+            );
+
+        front_service_cutouts();
+        left_service_cutouts();
+        rear_service_cutouts();
+    }
 }
 
 module base_shell() {
-    difference() {
-        union() {
-            // Floor and shallow retaining rim.
-            difference() {
-                rounded_prism(case_size, base_rim_height, corner_radius);
-                translate([wall, wall, floor_thickness])
-                    rounded_prism(
-                        [case_size[0] - 2 * wall, case_size[1] - 2 * wall],
-                        base_rim_height - floor_thickness + epsilon,
-                        max(corner_radius - wall, 1.0)
-                    );
-            }
+    union() {
+        base_shell_body();
 
-            // PCB standoffs; OD remains inside NVIDIA's 8 mm keep-out.
-            for (p = mount_holes)
-                translate([p[0], p[1], floor_thickness])
-                    cylinder(h = pcb_bottom_z - floor_thickness, d = standoff_od);
+        for (p = mount_holes) {
+            // The shoulder supports the PCB without entering its component keep-out.
+            translate([p[0], p[1], floor_thickness])
+                cylinder(h = pcb_bottom_z - floor_thickness, d = standoff_d);
+
+            // Solid pin passes upward through the PCB and into the lid's blind socket.
+            translate([p[0], p[1], floor_thickness])
+                cylinder(h = base_peg_top_z - floor_thickness, d = base_peg_d);
         }
+    }
+}
 
-        // Blind M2.5 self-tapping pilots sized for the specified 40 mm screws.
-        // A 2.2 mm floor remains closed beneath the screw tip.
-        for (p = mount_holes)
-            translate([p[0], p[1], floor_thickness - 0.2])
-                cylinder(
-                    h = pcb_bottom_z - floor_thickness + 0.5,
-                    d = base_pilot_d
-                );
+module lid_shell_body() {
+    difference() {
+        translate([0, 0, lid_wall_bottom_z])
+            rounded_prism(
+                outer_size,
+                case_top_z - lid_wall_bottom_z,
+                case_corner_radius
+            );
 
-        // Bottom intake slots for the underside M.2 devices.
-        for (y = [43.0 : 7.0 : 71.0])
-            slot_cutout(
-                [case_size[0] / 2, y],
-                62.0,
-                3.2,
-                floor_thickness + 2 * epsilon,
-                -epsilon
+        // Hollow cap; the remaining roof is exactly top_thickness.
+        translate([wall, wall, lid_wall_bottom_z - epsilon])
+            rounded_prism(
+                inner_size,
+                top_inner_z - lid_wall_bottom_z + 2 * epsilon,
+                max(case_corner_radius - wall, 1.0)
             );
     }
 }
@@ -146,107 +278,90 @@ module base_shell() {
 module lid_assembled() {
     difference() {
         union() {
-            // Top panel.
-            rounded_prism(case_size, lid_thickness, corner_radius);
+            lid_shell_body();
 
-            // Short locating skirt, kept outside the official 103 x 90.5 envelope.
-            translate([0, 0, -lid_skirt_drop])
-                difference() {
-                    rounded_prism(case_size, lid_skirt_drop, corner_radius);
-                    translate([wall, wall, -epsilon])
-                        rounded_prism(
-                            [case_size[0] - 2 * wall, case_size[1] - 2 * wall],
-                            lid_skirt_drop + 2 * epsilon,
-                            max(corner_radius - wall, 1.0)
-                        );
-                }
-
-            // Long clamping posts land on the official mounting-hole keep-outs.
+            // Four posts descend over the official mounting-hole keep-outs.
             for (p = mount_holes)
-                translate([p[0], p[1], -lid_post_length])
-                    cylinder(h = lid_post_length, d = standoff_od);
+                translate([p[0], p[1], lid_post_bottom_z])
+                    cylinder(h = top_inner_z - lid_post_bottom_z, d = lid_post_d);
         }
 
-        // Completely open fan window: no grille over the original fan.
-        rounded_cutout(
-            fan_center,
-            fan_opening,
-            lid_thickness + 2 * epsilon,
-            fan_opening_radius,
-            -epsilon
-        );
+        front_service_cutouts();
+        left_service_cutouts();
+        rear_service_cutouts();
+        top_service_cutouts();
 
-        // Exhaust / service slots in the front half of the cover.
-        for (y = [17.0 : 7.0 : 45.0])
-            slot_cutout(
-                [case_size[0] / 2, y],
-                64.0,
-                3.2,
-                lid_thickness + 2 * epsilon,
-                -epsilon
-            );
-
-        // M2.5 screw clearance through the top and clamping posts.
+        // Blind glue sockets: no through-holes or screw heads on the exterior.
         for (p = mount_holes)
-            translate([p[0], p[1], -lid_post_length - epsilon])
-                cylinder(
-                    h = lid_post_length + lid_thickness + 2 * epsilon,
-                    d = lid_clearance_d
-                );
+            translate([p[0], p[1], lid_post_bottom_z - epsilon])
+                cylinder(h = lid_socket_depth + epsilon, d = lid_socket_d);
     }
 }
 
 module developer_kit_mockup() {
-    // PCB and the four verified mounting holes.
-    color([0.10, 0.38, 0.18, 0.85])
+    // Official 100 x 79 mm PCB and four 2.75 mm NPTH mounting holes.
+    color([0.08, 0.36, 0.16, 0.90])
         difference() {
-            translate([pcb_lower_left[0], pcb_lower_left[1], pcb_bottom_z])
+            translate([pcb_origin[0], pcb_origin[1], pcb_bottom_z])
                 rounded_prism([pcb_size[0], pcb_size[1]], pcb_size[2], 0.6);
             for (p = mount_holes)
                 translate([p[0], p[1], pcb_bottom_z - epsilon])
                     cylinder(h = pcb_size[2] + 2 * epsilon, d = mount_hole_d);
         }
 
-    // Simplified heatsink envelope for visual collision checking only.
-    color([0.30, 0.32, 0.34, 0.85])
-        translate([fan_center[0] - 31.5, fan_center[1] - 22.0, pcb_top_z + 4.0])
+    // Conservative official heatsink envelope for collision checking.
+    color([0.30, 0.32, 0.34, 0.88])
+        translate([
+            fan_center[0] - 31.5,
+            fan_center[1] - 22.0,
+            pcb_top_z + 3.0
+        ])
             cube([63.0, 44.0, 22.0]);
 
-    // Approximate 35 mm original fan, centered from the official STEP model.
-    color([0.04, 0.04, 0.04, 1.0])
-        translate([fan_center[0] - 18.0, fan_center[1] - 18.0, pcb_top_z + 24.0])
-            rounded_prism([36.0, 36.0], 5.0, 3.0);
+    // Stock square fan ends flush with the enclosure exterior.
+    color([0.035, 0.035, 0.040, 1.0])
+        translate([
+            fan_center[0] - stock_fan_size[0] / 2,
+            fan_center[1] - stock_fan_size[1] / 2,
+            case_top_z - 5.0
+        ])
+            rounded_prism(stock_fan_size, 5.0, 1.2);
 
-    // Simplified front connector envelope.
-    color([0.62, 0.64, 0.66, 0.90])
-        translate([pcb_lower_left[0] + 6.0, 4.0, pcb_bottom_z])
-            cube([88.0, 12.0, 16.0]);
+    // Rear antenna bulkhead bodies, shown only for placement review.
+    color([0.72, 0.72, 0.74, 1.0])
+        for (x = antenna_centers_x)
+            translate([x, outer_size[1] + 3.0, antenna_center_z])
+                rotate([90, 0, 0])
+                    cylinder(h = 6.0, d = antenna_hole_d);
 }
 
 module assembled_view() {
-    color([0.12, 0.18, 0.24, 1.0]) base_shell();
+    color([0.10, 0.16, 0.24, 1.0]) base_shell();
     developer_kit_mockup();
-    color([0.14, 0.22, 0.32, 0.72])
-        translate([0, 0, lid_underside_z])
-            lid_assembled();
+    color([0.12, 0.22, 0.34, 0.62]) lid_assembled();
 }
 
 module lid_print_orientation() {
-    // Flip the lid so the flat exterior is on the print bed and posts point up.
-    translate([0, case_size[1], lid_thickness])
+    // Exterior roof lies on the print bed; posts and walls grow upward without support.
+    translate([0, outer_size[1], case_top_z])
         rotate([180, 0, 0])
             lid_assembled();
+}
+
+module print_set() {
+    base_shell();
+    translate([outer_size[0] + print_gap, 0, 0])
+        lid_print_orientation();
 }
 
 if (part == "base") {
     base_shell();
 } else if (part == "lid") {
     lid_print_orientation();
-} else if (part == "both") {
-    base_shell();
-    translate([case_size[0] + 12.0, 0, 0]) lid_print_orientation();
+} else if (part == "assembly") {
+    assembled_view();
 } else if (part == "mockup") {
     developer_kit_mockup();
 } else {
-    assembled_view();
+    print_set();
 }

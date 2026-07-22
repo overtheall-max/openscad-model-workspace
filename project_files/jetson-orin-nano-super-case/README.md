@@ -1,13 +1,13 @@
 # Jetson Orin Nano Super Developer Kit enclosure
 
-This directory contains a parameterized, two-piece OpenSCAD enclosure for the NVIDIA Jetson Orin Nano Super Developer Kit.
+This directory contains a parameterized, full six-face OpenSCAD enclosure for the NVIDIA Jetson Orin Nano Super Developer Kit. The base and lid remain separate physical parts, but the default STL places both on one print plate.
 
 ## Files
 
 - `source/jetson_orin_nano_super_case.scad` - editable source model
-- `../../current_stl/jetson_orin_nano_super_case_base.stl` - current print-ready base
-- `../../current_stl/jetson_orin_nano_super_case_lid.stl` - current print-ready lid
-- `process/previews/jetson_orin_nano_super_case_preview.png` - assembled preview
+- `../../current_stl/jetson_orin_nano_super_case_print_set.stl` - current base and lid in one print-ready STL
+- `process/previews/jetson_orin_nano_super_case_v2_assembly.png` - assembled preview
+- `process/previews/jetson_orin_nano_super_case_v2_print_set.png` - one-plate print preview
 - `CHANGELOG.md` - design change record
 - `SOURCES.md` - reproducible reference links
 
@@ -17,6 +17,9 @@ This directory contains a parameterized, two-piece OpenSCAD enclosure for the NV
 - Main mounting holes: 2.75 mm diameter, 92 x 58 mm pitch
 - Complete developer-kit envelope: 103 x 90.5 x 34.77 mm
 - Fan center: extracted from the official P3766 STEP assembly transform
+- Stock fan body: approximately 35 x 35 mm from the official STEP geometry
+- Rear wall: 2.70 mm
+- Rear antenna bulkhead holes: 6.17 mm diameter
 
 The main mounting-hole centers, expressed from the PCB lower-left corner, are:
 
@@ -25,31 +28,46 @@ The main mounting-hole centers, expressed from the PCB lower-left corner, are:
 (4, 75)   (96, 75)
 ```
 
+## Orientation and openings
+
+With the front I/O facing the user, X runs left-to-right and Y runs front-to-back:
+
+- Front: separate local windows for DisplayPort, the four USB-A ports, and the adjacent RJ45/USB-C region. The windows include clearance for molded cable plugs but do not remove the entire wall.
+- Left: a DC-jack opening and a large service window for both CSI ribbon connectors and their locking tabs.
+- Rear: a low service window for the horizontal header region plus two opposite-side 6.17 mm antenna bulkhead holes.
+- Right: the wall remains closed.
+- Top: the complete stock fan is exposed through a close-fitting square opening, and a rectangular top-right exit serves the right-side ribbon/40-pin region.
+- Bottom: fully closed.
+
+The exterior top surface is set flush with the stock fan top. The inner footprint adds only 0.30 mm clearance per PCB side.
+
+## Screwless assembly
+
+Four solid 2.35 mm base pegs grow from 6.4 mm PCB-support shoulders. The pegs pass upward through the official 2.75 mm PCB holes. Four long lid posts contain 2.70 mm blind sockets that slide over the peg ends. Add a small amount of suitable adhesive inside the blind sockets after the fit has been checked.
+
+There are no opposing screws and no exterior screw holes. If later disassembly is required, cut the glued printed joint rather than forcing the PCB.
+
 ## OpenSCAD use
 
 Change `part` at the top of `source/jetson_orin_nano_super_case.scad`:
 
 ```scad
-part = "base";      // base STL
-part = "lid";       // lid STL, already flipped for printing
-part = "assembly";  // assembled visual check
+part = "print_set"; // base and lid together in one STL
+part = "base";      // base only
+part = "lid";       // lid only, already flipped for printing
+part = "assembly";  // assembled visual and collision check
 ```
 
-Suggested first print: PLA or PETG, 0.20 mm layers, 4 perimeters, 25-35% infill. The lid is designed to print exterior-face-down without support. Four M2.5 x 40 mm screws pass through the lid posts and PCB holes into the blind base pilots.
+The combined STL occupies 224 x 85 mm and places both parts flat on the same build plate. The lid prints exterior-face-down so its walls and blind-socket posts grow upward without support. Suggested first print: PLA or PETG, 0.20 mm layers, 4 perimeters, 25-35% infill.
 
-Before a long final print, print a 2-3 layer outline or a cropped mounting-hole test and compare it against the physical board. Developer-kit tolerances, printer shrinkage, and aftermarket accessories can vary.
+Before applying adhesive, dry-fit the PCB, check all cable plugs, confirm the CSI latch is reachable, and verify the two 6.17 mm antenna bulkheads. Printer shrinkage and aftermarket cable shells can vary.
 
 Export updated parts from the workspace root, always overwriting the stable filenames:
 
 ```bash
 arch -arm64 /Applications/Utilities/OpenSCAD.app/Contents/MacOS/OpenSCAD \
-  -D 'part="base"' \
-  -o current_stl/jetson_orin_nano_super_case_base.stl \
-  project_files/jetson-orin-nano-super-case/source/jetson_orin_nano_super_case.scad
-
-arch -arm64 /Applications/Utilities/OpenSCAD.app/Contents/MacOS/OpenSCAD \
-  -D 'part="lid"' \
-  -o current_stl/jetson_orin_nano_super_case_lid.stl \
+  -D 'part="print_set"' \
+  -o current_stl/jetson_orin_nano_super_case_print_set.stl \
   project_files/jetson-orin-nano-super-case/source/jetson_orin_nano_super_case.scad
 ```
 
