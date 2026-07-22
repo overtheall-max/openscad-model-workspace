@@ -58,7 +58,7 @@ CHANGELOG.md           人类可读的改动记录
 - Safari 完整模式通过 `model_viewer/app/open-in-safari.command` 启动，只监听本机回环地址；使用 macOS 原生目录选择器完成 U 盘或外置硬盘导出。
 - 直接打开 `index.html` 时，Chrome 可使用浏览器目录读写接口；Safari/Firefox 只能使用兼容读取和普通下载。
 - 支持的查看格式至少包括 STL 与 3MF；当前实现还支持 OBJ、PLY、AMF 和 GLB。
-- `node_modules/` 不提交 Git；必须提交离线可运行的 `viewer.bundle.js`、依赖锁文件和源代码。
+- `node_modules/` 不提交 Git；必须提交离线可运行的 `viewer.bundle.js`、防止浏览器复用旧 bundle 的 `loader.js`、依赖锁文件和源代码。
 
 ## 接到“开新项目”请求时
 

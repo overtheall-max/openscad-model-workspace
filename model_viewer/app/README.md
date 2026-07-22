@@ -56,6 +56,6 @@ npm run check
 npm run build
 ```
 
-提交 `viewer.bundle.js`，不要提交 `node_modules/`。页面使用固定依赖版本构建，运行时不需要联网。
+提交 `viewer.bundle.js`，不要提交 `node_modules/`。`loader.js` 会为每次页面启动生成新的 bundle 请求地址，避免直接双击 HTML 时浏览器沿用旧脚本；不要把页面入口改回直接引用 `viewer.bundle.js`。页面使用固定依赖版本构建，运行时不需要联网。
 
 每次切换当前项目时，负责建模的 Agent 必须同步更新 `config.json` 中的 `projectStatus`、OpenSCAD 源文件、输出文件和 `-D` 参数映射。新项目或继续修改时设为 `working`，完成验证并定稿后设为 `completed`。
