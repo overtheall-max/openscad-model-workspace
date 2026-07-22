@@ -49,6 +49,13 @@ CHANGELOG.md           人类可读的改动记录
 - 大型厂商原始资料放入 `references/vendor/`。该目录默认不提交 Git，必须用 `SOURCES.md` 记录官方下载地址和用途。
 - 可再生成的临时分析文件放入 `process/research_tmp/`，默认不提交 Git。
 
+### 文件命名
+
+- 项目文件夹使用能明确区分项目的完整 slug，但项目内部文件名必须简短，不要在每个文件名中重复项目 slug。
+- 单一外壳项目优先使用 `case.scad`、`case.stl`、`assembly.png`、`rear.png`、`print.png` 等短名。
+- 只有同时存在多个独立输出零件时才增加必要限定词，例如 `base.stl`、`lid.stl`；不得堆叠冗长设备全名。
+- 已被查看器、脚本或 Git 历史引用的现有长文件名不为纯改名而立即破坏；在新项目或下一次明确的路径重构时统一采用短名并同步全部引用。
+
 ### 4. `model_viewer/`
 
 - 根部只放面向用户的两个入口：`index.html` 和 `open-in-safari.command`；查看器的脚本、样式、配置、构建文件和本机辅助程序全部放入 `model_viewer/app/`。
