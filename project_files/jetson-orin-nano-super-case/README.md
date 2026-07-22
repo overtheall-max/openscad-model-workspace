@@ -35,7 +35,7 @@ With the front I/O facing the user, X runs left-to-right and Y runs front-to-bac
 
 - Front: separate local windows for the DC barrel jack, DisplayPort, the four USB-A ports, and the adjacent RJ45/USB-C region. The order and edge assignment were cross-checked against a user-supplied physical-board photo. The windows include clearance for molded cable plugs but do not remove the entire wall.
 - Left: a large service window for both CSI ribbon connectors and their locking tabs; there is no DC opening on this wall.
-- Rear: a centered 78 mm wide low service window covers the horizontal header region. Two opposite-side 6.17 mm antenna bulkhead holes sit at PCB-local X=11 and 89 mm, outside the conservative heatsink envelope.
+- Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph. Two 6.17 mm threaded antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
 - Right: the wall remains closed.
 - Top: the complete stock fan is exposed through a close-fitting square opening, and a rectangular top-right exit serves the right-side ribbon/40-pin region.
 - Bottom: fully closed.
@@ -48,7 +48,7 @@ Four solid 2.35 mm base pegs grow from 6.4 mm PCB-support shoulders. The pegs pa
 
 There are no opposing screws and no exterior screw holes. If later disassembly is required, cut the glued printed joint rather than forcing the PCB.
 
-The rear antenna centers sit 18 mm above the PCB top. The model reserves a 10 mm diameter nut/washer keep-out around each hole, keeps that hardware outside the conservative heatsink envelope, and leaves at least 3 mm of solid rear wall above the header opening.
+The rear antenna centers sit 19.5 mm above the PCB top. The 6.17 mm dimension applies only to the narrow threaded wall section; the placement mockup uses a 10 mm diameter external antenna body. The threaded sections clear the conservative heatsink envelope, and the full 10 mm external bodies retain at least 5 mm of solid rear wall above the header opening.
 
 ## OpenSCAD use
 

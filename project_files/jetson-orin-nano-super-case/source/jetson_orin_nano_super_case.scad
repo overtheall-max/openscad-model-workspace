@@ -110,20 +110,21 @@ csi_window_y1 = pcb_origin[1] + 69.0;
 csi_window_z0 = pcb_bottom_z - 0.50;
 csi_window_z1 = pcb_top_z + 15.5;
 
-// Rear service window for the horizontal button/CAN/header region.
-// Physical-board rear/top photographs show that this row spans the central rear edge.
-rear_service_x0 = pcb_origin[0] + 11.0;
-rear_service_x1 = pcb_origin[0] + 89.0;
+// Rear service window for only the user-marked horizontal pin-header region.
+// The annotated rear photograph places it in this approximately 40 mm span;
+// the rest of the rear wall must remain closed.
+rear_service_x0 = pcb_origin[0] + 18.0;
+rear_service_x1 = pcb_origin[0] + 58.0;
 rear_service_z0 = pcb_bottom_z - 0.50;
 rear_service_z1 = pcb_top_z + 9.5;
 
-// User-specified rear bulkhead antenna holes, moved outside the conservative heatsink
-// envelope after checking the physical-board photographs. A 10 mm hardware keep-out
-// represents the nut/washer around each exact 6.17 mm through-hole.
+// User-specified rear antenna geometry. The 6.17 mm value is only the narrow
+// threaded section through the wall; the external antenna base is about 10 mm.
+// Centers follow the two purple marks in the annotated rear photograph.
 antenna_hole_d = 6.17;
-antenna_hardware_keepout_d = 10.0;
-antenna_centers_x = [pcb_origin[0] + 11.0, pcb_origin[0] + 89.0];
-antenna_center_z = pcb_top_z + 18.0;
+antenna_external_body_d = 10.0;
+antenna_centers_x = [pcb_origin[0] + 13.0, pcb_origin[0] + 87.0];
+antenna_center_z = pcb_top_z + 19.5;
 
 // Conservative top-cooling envelope used for rear bulkhead collision checks.
 heatsink_envelope_x0 = fan_center[0] - 31.5;
@@ -146,12 +147,20 @@ assert(abs(case_top_z - fan_top_z) < 0.001,
 assert(abs(fan_opening[0] - 35.60) < 0.001 &&
        abs(fan_opening[1] - 35.60) < 0.001,
        "Top opening must expose the complete square stock fan, not only the blades");
-assert(antenna_centers_x[0] + antenna_hardware_keepout_d / 2 <= heatsink_envelope_x0,
-       "Left antenna nut/washer keep-out must clear the heatsink envelope");
-assert(antenna_centers_x[1] - antenna_hardware_keepout_d / 2 >= heatsink_envelope_x1,
-       "Right antenna nut/washer keep-out must clear the heatsink envelope");
-assert(antenna_center_z - antenna_hardware_keepout_d / 2 - rear_service_z1 >= 3.0,
-       "Antenna hardware needs at least 3 mm of solid wall above the rear service opening");
+assert(antenna_centers_x[0] + antenna_hole_d / 2 <= heatsink_envelope_x0,
+       "Left antenna threaded section must clear the heatsink envelope");
+assert(antenna_centers_x[1] - antenna_hole_d / 2 >= heatsink_envelope_x1,
+       "Right antenna threaded section must clear the heatsink envelope");
+assert(antenna_center_z - antenna_external_body_d / 2 - rear_service_z1 >= 4.5,
+       "The 10 mm antenna body needs at least 4.5 mm of solid wall above the rear opening");
+assert(antenna_centers_x[0] - antenna_external_body_d / 2 >= wall + 2.0 &&
+       antenna_centers_x[1] + antenna_external_body_d / 2 <= outer_size[0] - wall - 2.0,
+       "External antenna bodies must stay away from the rear corner columns");
+assert(antenna_centers_x[0] - mount_holes[2][0] -
+       (antenna_external_body_d + lid_post_d) / 2 >= 0.70 &&
+       mount_holes[3][0] - antenna_centers_x[1] -
+       (antenna_external_body_d + lid_post_d) / 2 >= 0.70,
+       "The 10 mm external antenna bodies must not overlap the rear support-post projections");
 
 module rounded_rect_2d(size, radius) {
     rr = min(radius, min(size[0], size[1]) / 2);
@@ -339,12 +348,17 @@ module developer_kit_mockup() {
         ])
             rounded_prism(stock_fan_size, 5.0, 1.2);
 
-    // Rear antenna bulkhead bodies, shown only for placement review.
+    // Rear antenna assembly: exact 6.17 mm threaded wall section plus the
+    // approximately 10 mm external antenna base from the user's photograph.
     color([0.72, 0.72, 0.74, 1.0])
-        for (x = antenna_centers_x)
-            translate([x, outer_size[1] + 3.0, antenna_center_z])
+        for (x = antenna_centers_x) {
+            translate([x, outer_size[1] + 8.0, antenna_center_z])
                 rotate([90, 0, 0])
-                    cylinder(h = 6.0, d = antenna_hole_d);
+                    cylinder(h = 8.0, d = antenna_external_body_d);
+            translate([x, outer_size[1] + epsilon, antenna_center_z])
+                rotate([90, 0, 0])
+                    cylinder(h = wall + 2 * epsilon, d = antenna_hole_d);
+        }
 }
 
 module assembled_view() {

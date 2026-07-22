@@ -1,5 +1,12 @@
 # Change log
 
+## 2026-07-22 - Annotated-photo rear correction
+
+- Corrected the previously over-wide 78 mm rear opening to the approximately 40 mm pin-header span explicitly circled in red by the user.
+- Repositioned the antenna centers near the two purple marks at PCB-local X=13/87 mm and 19.5 mm above the PCB top.
+- Distinguished the exact 6.17 mm threaded through-hole from the approximately 10 mm external antenna body and added both to the placement mockup.
+- Added clearance assertions for the threaded sections, the full external antenna bodies, the rear opening, and rear corner structure.
+
 ## 2026-07-22 - Photo-verified rear clearance correction
 
 - Recentered and widened the rear header service opening from PCB-local X=15-69 mm to X=11-89 mm after reviewing physical rear/top photographs.
