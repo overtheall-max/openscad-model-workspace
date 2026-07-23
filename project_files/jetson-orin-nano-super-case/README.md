@@ -18,7 +18,7 @@ This directory contains a parameterized, full six-face OpenSCAD enclosure for th
 - Main mounting holes: 2.75 mm diameter, 92 x 58 mm pitch
 - Complete developer-kit envelope: 103 x 90.5 x 34.77 mm
 - Fan center: extracted from the official P3766 STEP assembly transform
-- Stock fan body: approximately 35 x 35 mm from the official STEP geometry
+- Complete heatsink/fan assembly footprint used for the top fit: 63 x 44 mm
 - Rear wall: 2.70 mm
 - Rear antenna bulkhead holes: 6.17 mm diameter
 
@@ -33,14 +33,14 @@ The main mounting-hole centers, expressed from the PCB lower-left corner, are:
 
 With the front I/O facing the user, X runs left-to-right and Y runs front-to-back:
 
-- Front: separate local windows for the DC barrel jack, DisplayPort, the four USB-A ports, and the adjacent RJ45/USB-C region. The order and edge assignment were cross-checked against a user-supplied physical-board photo. The windows include clearance for molded cable plugs but do not remove the entire wall.
-- Left: a large service window for both CSI ribbon connectors and their locking tabs; there is no DC opening on this wall.
+- Front: separate local windows for the DC barrel jack, DisplayPort, four USB-A ports, RJ45, and USB-C. The USB-C opening is only 9 mm high rather than sharing the RJ45 height. The windows include clearance for molded cable plugs but do not remove the entire wall.
+- Left: a service window for both CSI ribbon connectors; its upper-shell opening height is half the previous design. There is no DC opening on this wall.
 - Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph. Two 6.17 mm threaded antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
 - Right: the wall remains closed.
-- Top: the complete stock fan is exposed through a close-fitting square opening, and a rectangular top-right exit serves the right-side ribbon/40-pin region.
+- Top: the complete 63 x 44 mm heatsink/fan assembly embeds through a 63.6 x 44.6 mm opening. The right-side ribbon/40-pin opening is an internal slot, so the right roof edge, side wall, and support posts remain closed.
 - Bottom: fully closed.
 
-The exterior top surface and stock-fan top share the exact same Z plane, 30.50 mm above the PCB bottom in the model. The top opening is a 35.6 x 35.6 mm square around the complete approximately 35 x 35 mm fan body, rather than a circular blade-only opening. The inner footprint adds only 0.30 mm clearance per PCB side.
+The exterior top surface and cooling-assembly top share the exact same Z plane, 30.50 mm above the PCB bottom. The inner footprint now adds 0.80 mm clearance per PCB side, 0.50 mm more than the preceding revision; the outer dimensions expand by the same amount while all wall thicknesses remain unchanged.
 
 ## Screwless assembly
 
@@ -61,7 +61,7 @@ part = "lid";       // lid only, already flipped for printing
 part = "assembly";  // assembled visual and collision check
 ```
 
-The combined STL occupies 224 x 85 mm and places both parts flat on the same build plate. The lid prints exterior-face-down so its walls and blind-socket posts grow upward without support. Suggested first print: PLA or PETG, 0.20 mm layers, 4 perimeters, 25-35% infill.
+The combined STL occupies 226 x 86 mm and places both parts flat on the same build plate. The lid prints exterior-face-down so its walls and blind-socket posts grow upward without support. Suggested first print: PLA or PETG, 0.20 mm layers, 4 perimeters, 25-35% infill.
 
 Before applying adhesive, dry-fit the PCB, check all cable plugs, confirm the CSI latch is reachable, and verify the two 6.17 mm antenna bulkheads. Printer shrinkage and aftermarket cable shells can vary.
 

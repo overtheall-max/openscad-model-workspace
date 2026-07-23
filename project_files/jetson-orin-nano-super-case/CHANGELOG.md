@@ -1,5 +1,13 @@
 # Change log
 
+## 2026-07-23 - Cooling fit, port-height, and clearance correction
+
+- Halved only the upper-shell height of the left CSI service opening while retaining its span across both CSI connectors.
+- Split the former combined RJ45/USB-C front cutout and reduced the USB-C opening height to 9 mm.
+- Replaced the incorrect 35.6 x 35.6 fan-only roof opening with a 63.6 x 44.6 mm opening for the complete 63 x 44 mm heatsink/fan assembly.
+- Converted the right 40-pin/ribbon opening from an edge-breaking notch into an internal roof slot, restoring the right roof edge and fully enclosing both right support posts.
+- Increased PCB clearance from 0.30 to 0.80 mm per side and expanded the outer shell correspondingly without changing wall thickness.
+
 ## 2026-07-22 - Annotated-photo rear correction
 
 - Corrected the previously over-wide 78 mm rear opening to the approximately 40 mm pin-header span explicitly circled in red by the user.

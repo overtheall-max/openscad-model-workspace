@@ -25,7 +25,7 @@ $fn = 64;
 epsilon = 0.04;
 
 // Printer and shell tuning
-pcb_fit_clearance = 0.60;       // total X/Y clearance around the official PCB
+pcb_fit_clearance = 1.60;       // 0.80 mm per side; user requested +0.50 mm per inner face
 wall = 2.70;                    // includes the explicitly required 2.7 mm rear wall
 floor_thickness = 2.40;
 top_thickness = 2.70;
@@ -71,11 +71,11 @@ fan_center = [
     pcb_origin[0] + fan_center_from_pcb_lower_left[0],
     pcb_origin[1] + fan_center_from_pcb_lower_left[1]
 ];
-stock_fan_size = [35.0, 35.0];
-fan_window_clearance = 0.60;
-fan_opening = [
-    stock_fan_size[0] + fan_window_clearance,
-    stock_fan_size[1] + fan_window_clearance
+heatsink_size = [63.0, 44.0];
+heatsink_window_clearance = 0.60;
+heatsink_opening = [
+    heatsink_size[0] + heatsink_window_clearance,
+    heatsink_size[1] + heatsink_window_clearance
 ];
 
 // Screwless through-PCB registration and glue joint.
@@ -101,14 +101,17 @@ front_openings = [
     [6.000, 11.0, pcb_bottom_z - 0.50, 13.5],  // DC barrel jack + molded plug
     [22.760, 20.0, pcb_bottom_z - 0.50, 11.0],  // DisplayPort
     [51.100, 32.0, pcb_bottom_z - 0.50, 18.5],  // both stacked USB-A receptacles
-    [84.050, 31.5, pcb_bottom_z - 0.50, 18.0]   // RJ45 latch + USB-C molded plug
+    [76.950, 18.0, pcb_bottom_z - 0.50, 18.0],  // RJ45 latch and molded boot
+    [91.975, 13.0, pcb_bottom_z - 0.50, 9.0]    // USB-C: close the wall above the plug
 ];
 
 // Left-side service geometry for the two CSI connectors.
 csi_window_y0 = pcb_origin[1] + 25.0;
 csi_window_y1 = pcb_origin[1] + 69.0;
 csi_window_z0 = pcb_bottom_z - 0.50;
-csi_window_z1 = pcb_top_z + 15.5;
+csi_original_upper_z1 = pcb_top_z + 15.5;
+csi_window_z1 = lid_wall_bottom_z +
+    (csi_original_upper_z1 - lid_wall_bottom_z) / 2;
 
 // Rear service window for only the user-marked horizontal pin-header region.
 // The annotated rear photograph places it in this approximately 40 mm span;
@@ -127,11 +130,13 @@ antenna_centers_x = [pcb_origin[0] + 13.0, pcb_origin[0] + 87.0];
 antenna_center_z = pcb_top_z + 19.5;
 
 // Conservative top-cooling envelope used for rear bulkhead collision checks.
-heatsink_envelope_x0 = fan_center[0] - 31.5;
-heatsink_envelope_x1 = fan_center[0] + 31.5;
+heatsink_envelope_x0 = fan_center[0] - heatsink_size[0] / 2;
+heatsink_envelope_x1 = fan_center[0] + heatsink_size[0] / 2;
 
 // Top-right cable exit above the right-side 40-pin/ribbon breakout region.
-ribbon_exit_x0 = pcb_origin[0] + 87.5;
+// It remains an internal roof slot: the right edge strip and support posts stay closed.
+ribbon_exit_x0 = pcb_origin[0] + 81.0;
+ribbon_exit_x1 = pcb_origin[0] + 92.0;
 ribbon_exit_y0 = pcb_origin[1] + 16.0;
 ribbon_exit_y1 = pcb_origin[1] + 69.0;
 
@@ -144,9 +149,13 @@ assert(base_peg_top_z < lid_post_bottom_z + lid_socket_depth,
 assert(case_top_z > pcb_top_z, "Case top must sit above the PCB");
 assert(abs(case_top_z - fan_top_z) < 0.001,
        "Enclosure top must remain exactly flush with the stock fan top");
-assert(abs(fan_opening[0] - 35.60) < 0.001 &&
-       abs(fan_opening[1] - 35.60) < 0.001,
-       "Top opening must expose the complete square stock fan, not only the blades");
+assert(abs(heatsink_opening[0] - 63.60) < 0.001 &&
+       abs(heatsink_opening[1] - 44.60) < 0.001,
+       "Top opening must fit the complete heatsink assembly, not only the fan blades");
+assert(ribbon_exit_x1 <= mount_holes[1][0] - lid_post_d / 2 - 0.50,
+       "Right ribbon slot must not expose either right support post");
+assert(ribbon_exit_x1 < outer_size[0] - wall,
+       "Right ribbon slot must leave the top edge and side wall closed");
 assert(antenna_centers_x[0] + antenna_hole_d / 2 <= heatsink_envelope_x0,
        "Left antenna threaded section must clear the heatsink envelope");
 assert(antenna_centers_x[1] - antenna_hole_d / 2 >= heatsink_envelope_x1,
@@ -220,18 +229,18 @@ module rear_service_cutouts() {
 }
 
 module top_service_cutouts() {
-    // The whole square stock fan is exposed, with only 0.30 mm clearance per side.
+    // The complete 63 x 44 mm heatsink/fan assembly embeds through the roof.
     rounded_xy_cutout(
         fan_center,
-        fan_opening,
+        heatsink_opening,
         top_thickness + 2 * epsilon,
         1.4,
         top_inner_z - epsilon
     );
 
-    // Vertical ribbon exit at the top-right edge.
+    // Internal ribbon slot: do not cut through the right roof edge or side wall.
     exit_size = [
-        outer_size[0] - ribbon_exit_x0 + epsilon,
+        ribbon_exit_x1 - ribbon_exit_x0,
         ribbon_exit_y1 - ribbon_exit_y0
     ];
     rounded_xy_cutout(
@@ -330,23 +339,18 @@ module developer_kit_mockup() {
                     cylinder(h = pcb_size[2] + 2 * epsilon, d = mount_hole_d);
         }
 
-    // Conservative official heatsink envelope for collision checking.
-    color([0.30, 0.32, 0.34, 0.88])
-        translate([
-            fan_center[0] - 31.5,
-            fan_center[1] - 22.0,
-            pcb_top_z + 3.0
-        ])
-            cube([63.0, 44.0, 22.0]);
-
-    // Stock square fan ends flush with the enclosure exterior.
+    // Complete cooling assembly envelope, ending flush with the enclosure roof.
     color([0.035, 0.035, 0.040, 1.0])
         translate([
-            fan_center[0] - stock_fan_size[0] / 2,
-            fan_center[1] - stock_fan_size[1] / 2,
-            case_top_z - 5.0
+            fan_center[0] - heatsink_size[0] / 2,
+            fan_center[1] - heatsink_size[1] / 2,
+            pcb_top_z + 3.0
         ])
-            rounded_prism(stock_fan_size, 5.0, 1.2);
+            cube([
+                heatsink_size[0],
+                heatsink_size[1],
+                case_top_z - (pcb_top_z + 3.0)
+            ]);
 
     // Rear antenna assembly: exact 6.17 mm threaded wall section plus the
     // approximately 10 mm external antenna base from the user's photograph.
