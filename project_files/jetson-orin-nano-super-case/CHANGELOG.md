@@ -1,5 +1,11 @@
 # Change log
 
+## 2026-07-23 - Reduced lid-post diameter
+
+- Reduced all four lid support posts from 6.5 mm to 5.4 mm diameter.
+- Kept the blind sockets at 2.7 mm diameter, leaving 1.35 mm radial post wall thickness.
+- Preserved the top ribbon opening at 7.5 x 52.5 mm and added a 0.05 mm geometric gap so neither right post is exposed through the slot.
+
 ## 2026-07-23 - Corrected mounting-gusset orientation
 
 - Flipped both continuous triangular skirt gussets from below the base to the top surface.

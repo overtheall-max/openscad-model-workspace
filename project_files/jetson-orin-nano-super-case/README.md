@@ -37,7 +37,7 @@ With the front I/O facing the user, X runs left-to-right and Y runs front-to-bac
 - Left: a service window for both CSI ribbon connectors; its upper-shell opening height is half the previous design. There is no DC opening on this wall.
 - Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph; only its upper-shell portion is reduced to half the previous height, while the lower-shell opening remains unchanged. Two 7.17 mm antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
 - Right: the wall remains closed.
-- Top: the centered heatsink opening is 60.6 x 41.6 mm, with each edge 1.5 mm inward from the former 63.6 x 44.6 mm opening. The right-side ribbon/40-pin opening remains 7.5 mm wide and is lengthened by 1 mm toward each right support post, 2 mm total.
+- Top: the centered heatsink opening is 60.6 x 41.6 mm, with each edge 1.5 mm inward from the former 63.6 x 44.6 mm opening. The right-side ribbon/40-pin opening remains 7.5 x 52.5 mm; the four lid posts are reduced to 5.4 mm diameter so neither right post is exposed through the slot.
 - Bottom: fully closed.
 - Base mounting: centered 15 x 60 mm skirts extend from both left and right sides. Each is 2.4 mm thick, uses a continuous right-triangle gusset over the inner 5 mm, and carries two 2.2 mm M2 clearance holes in the outer 10 mm zone at 50 mm center spacing.
 
@@ -45,7 +45,7 @@ The exterior top surface and cooling-assembly top share the exact same Z plane, 
 
 ## Screwless assembly
 
-Four solid 2.35 mm base pegs grow from 6.4 mm PCB-support shoulders. The pegs pass upward through the official 2.75 mm PCB holes. Four long lid posts contain 2.70 mm blind sockets that slide over the peg ends. Add a small amount of suitable adhesive inside the blind sockets after the fit has been checked.
+Four solid 2.35 mm base pegs grow from 6.4 mm PCB-support shoulders. The pegs pass upward through the official 2.75 mm PCB holes. Four 5.4 mm diameter lid posts contain 2.70 mm blind sockets that slide over the peg ends. Add a small amount of suitable adhesive inside the blind sockets after the fit has been checked.
 
 There are no opposing screws and no exterior screw holes. If later disassembly is required, cut the glued printed joint rather than forcing the PCB.
 

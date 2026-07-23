@@ -104,7 +104,7 @@ standoff_d = 6.40;
 base_peg_d = 2.35;
 base_peg_above_pcb = 6.00;
 base_peg_top_z = pcb_top_z + base_peg_above_pcb;
-lid_post_d = 6.50;
+lid_post_d = 5.40;
 lid_post_bottom_z = pcb_top_z + 0.35;
 lid_socket_d = 2.70;
 lid_socket_depth = 7.00;
@@ -159,12 +159,12 @@ heatsink_envelope_x1 = fan_center[0] + heatsink_size[0] / 2;
 // Top-right cable exit above the right-side 40-pin/ribbon breakout region.
 // The connector lies directly between the two right support posts, so the slot
 // is centered on their X axis and stops clear of each post along Y.
-ribbon_exit_width = lid_post_d + 1.0;
-ribbon_post_end_overlap = 0.50;
+ribbon_exit_width = 7.50;
+ribbon_exit_end_offset = 2.75;
 ribbon_exit_x0 = mount_holes[1][0] - ribbon_exit_width / 2;
 ribbon_exit_x1 = mount_holes[1][0] + ribbon_exit_width / 2;
-ribbon_exit_y0 = mount_holes[1][1] + lid_post_d / 2 - ribbon_post_end_overlap;
-ribbon_exit_y1 = mount_holes[3][1] - lid_post_d / 2 + ribbon_post_end_overlap;
+ribbon_exit_y0 = mount_holes[1][1] + ribbon_exit_end_offset;
+ribbon_exit_y1 = mount_holes[3][1] - ribbon_exit_end_offset;
 
 assert(abs(wall - 2.70) < 0.001, "Rear wall must remain 2.7 mm");
 assert(abs(skirt_extension - 15.0) < 0.001 &&
@@ -190,9 +190,12 @@ assert(abs(heatsink_opening[0] - 60.60) < 0.001 &&
 assert(ribbon_exit_x0 <= mount_holes[1][0] - lid_post_d / 2 - 0.25 &&
        ribbon_exit_x1 >= mount_holes[1][0] + lid_post_d / 2 + 0.25,
        "Right ribbon slot must be slightly wider than the support-post diameter");
-assert(ribbon_exit_y0 >= mount_holes[1][1] + lid_post_d / 2 - 0.50 &&
-       ribbon_exit_y1 <= mount_holes[3][1] - lid_post_d / 2 + 0.50,
-       "Right ribbon slot ends must extend only 0.5 mm into each post projection");
+assert(abs(ribbon_exit_width - 7.50) < 0.001 &&
+       abs(ribbon_exit_y1 - ribbon_exit_y0 - 52.50) < 0.001,
+       "Right ribbon slot must remain 7.5 x 52.5 mm");
+assert(ribbon_exit_y0 >= mount_holes[1][1] + lid_post_d / 2 + 0.05 &&
+       ribbon_exit_y1 <= mount_holes[3][1] - lid_post_d / 2 - 0.05,
+       "Right ribbon slot must not expose either support post");
 assert(ribbon_exit_x1 < outer_size[0] - wall,
        "Right ribbon slot must leave the top edge and side wall closed");
 assert(antenna_center_z - antenna_external_body_d / 2 - rear_service_z1 >= 4.5,
