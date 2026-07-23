@@ -1,5 +1,10 @@
 # Change log
 
+## 2026-07-23 - Expanded cooling opening by 0.5 mm per edge
+
+- Expanded all four heatsink-opening edges outward by 0.5 mm without moving its center.
+- Increased the opening from 59.6 x 40.6 mm to 60.6 x 41.6 mm.
+
 ## 2026-07-23 - Antenna, ribbon-slot, and cooling-opening adjustment
 
 - Enlarged both rear antenna holes from 6.17 mm to 7.17 mm without moving their centers.

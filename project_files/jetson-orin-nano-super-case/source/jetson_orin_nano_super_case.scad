@@ -73,7 +73,7 @@ fan_center = [
 ];
 heatsink_size = [63.0, 44.0];
 heatsink_window_clearance = 0.60;
-heatsink_edge_inset = 2.00;
+heatsink_edge_inset = 1.50;
 heatsink_opening = [
     heatsink_size[0] + heatsink_window_clearance - 2 * heatsink_edge_inset,
     heatsink_size[1] + heatsink_window_clearance - 2 * heatsink_edge_inset
@@ -155,9 +155,9 @@ assert(base_peg_top_z < lid_post_bottom_z + lid_socket_depth,
 assert(case_top_z > pcb_top_z, "Case top must sit above the PCB");
 assert(abs(case_top_z - fan_top_z) < 0.001,
        "Enclosure top must remain exactly flush with the stock fan top");
-assert(abs(heatsink_opening[0] - 59.60) < 0.001 &&
-       abs(heatsink_opening[1] - 40.60) < 0.001,
-       "Heatsink opening must retain the requested 2 mm inset on all four edges");
+assert(abs(heatsink_opening[0] - 60.60) < 0.001 &&
+       abs(heatsink_opening[1] - 41.60) < 0.001,
+       "Heatsink opening must retain the requested 1.5 mm inset on all four edges");
 assert(ribbon_exit_x0 <= mount_holes[1][0] - lid_post_d / 2 - 0.25 &&
        ribbon_exit_x1 >= mount_holes[1][0] + lid_post_d / 2 + 0.25,
        "Right ribbon slot must be slightly wider than the support-post diameter");
@@ -235,7 +235,7 @@ module rear_service_cutouts() {
 }
 
 module top_service_cutouts() {
-    // Centered cooling opening, inset 2 mm from each edge of the prior envelope.
+    // Centered cooling opening, inset 1.5 mm from each edge of the prior envelope.
     rounded_xy_cutout(
         fan_center,
         heatsink_opening,

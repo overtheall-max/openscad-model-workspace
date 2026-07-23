@@ -37,7 +37,7 @@ With the front I/O facing the user, X runs left-to-right and Y runs front-to-bac
 - Left: a service window for both CSI ribbon connectors; its upper-shell opening height is half the previous design. There is no DC opening on this wall.
 - Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph; only its upper-shell portion is reduced to half the previous height, while the lower-shell opening remains unchanged. Two 7.17 mm antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
 - Right: the wall remains closed.
-- Top: the centered heatsink opening is 59.6 x 40.6 mm after moving all four former 63.6 x 44.6 mm opening edges inward by 2 mm. The right-side ribbon/40-pin opening remains 7.5 mm wide and is lengthened by 1 mm toward each right support post, 2 mm total.
+- Top: the centered heatsink opening is 60.6 x 41.6 mm, with each edge 1.5 mm inward from the former 63.6 x 44.6 mm opening. The right-side ribbon/40-pin opening remains 7.5 mm wide and is lengthened by 1 mm toward each right support post, 2 mm total.
 - Bottom: fully closed.
 
 The exterior top surface and cooling-assembly top share the exact same Z plane, 30.50 mm above the PCB bottom. The inner footprint now adds 0.80 mm clearance per PCB side, 0.50 mm more than the preceding revision; the outer dimensions expand by the same amount while all wall thicknesses remain unchanged.
