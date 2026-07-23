@@ -1,5 +1,12 @@
 # Change log
 
+## 2026-07-23 - Added left/right base mounting skirts
+
+- Added centered 15 x 60 mm mounting skirts to both sides of the base at the same 2.4 mm thickness as the closed floor.
+- Reinforced the inner 5 mm of each skirt with a continuous right-triangle gusset against the enclosure side wall.
+- Added two 2.2 mm M2 clearance holes per skirt in the remaining 10 x 60 mm flat area, with 50 mm center spacing.
+- Repositioned the lid above the widened base in the combined print layout to prevent overlap.
+
 ## 2026-07-23 - Expanded cooling opening by 0.5 mm per edge
 
 - Expanded all four heatsink-opening edges outward by 0.5 mm without moving its center.

@@ -39,6 +39,7 @@ With the front I/O facing the user, X runs left-to-right and Y runs front-to-bac
 - Right: the wall remains closed.
 - Top: the centered heatsink opening is 60.6 x 41.6 mm, with each edge 1.5 mm inward from the former 63.6 x 44.6 mm opening. The right-side ribbon/40-pin opening remains 7.5 mm wide and is lengthened by 1 mm toward each right support post, 2 mm total.
 - Bottom: fully closed.
+- Base mounting: centered 15 x 60 mm skirts extend from both left and right sides. Each is 2.4 mm thick, uses a continuous right-triangle gusset over the inner 5 mm, and carries two 2.2 mm M2 clearance holes in the outer 10 mm zone at 50 mm center spacing.
 
 The exterior top surface and cooling-assembly top share the exact same Z plane, 30.50 mm above the PCB bottom. The inner footprint now adds 0.80 mm clearance per PCB side, 0.50 mm more than the preceding revision; the outer dimensions expand by the same amount while all wall thicknesses remain unchanged.
 
@@ -61,7 +62,7 @@ part = "lid";       // lid only, already flipped for printing
 part = "assembly";  // assembled visual and collision check
 ```
 
-The combined STL occupies 226 x 86 mm and places both parts flat on the same build plate. The lid prints exterior-face-down so its walls and blind-socket posts grow upward without support. Suggested first print: PLA or PETG, 0.20 mm layers, 4 perimeters, 25-35% infill.
+The combined STL occupies 137 x 184 mm and places the widened base and lid one above the other on the same build plate with a 12 mm gap. The lid prints exterior-face-down so its walls and blind-socket posts grow upward without support. Suggested first print: PLA or PETG, 0.20 mm layers, 4 perimeters, 25-35% infill.
 
 Before applying adhesive, dry-fit the PCB, check all cable plugs, confirm the CSI latch is reachable, and verify the two 7.17 mm antenna bulkheads. Printer shrinkage and aftermarket cable shells can vary.
 

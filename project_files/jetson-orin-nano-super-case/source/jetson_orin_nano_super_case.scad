@@ -32,6 +32,15 @@ top_thickness = 2.70;
 case_corner_radius = 4.50;
 print_gap = 12.0;
 
+// Centered left/right mounting skirts on the base.
+skirt_extension = 15.0;
+skirt_width = 60.0;
+skirt_thickness = floor_thickness;
+skirt_gusset_depth = 5.0;
+skirt_gusset_height = 4.0;
+skirt_hole_d = 2.20;
+skirt_hole_spacing = 50.0;
+
 // NVIDIA P3768 mechanical data
 pcb_size = [100.0, 79.0, 1.60];
 pcb_under_clearance = 4.60;     // official 4.30 mm max + 0.30 mm print allowance
@@ -50,6 +59,17 @@ inner_size = [
 ];
 outer_size = [inner_size[0] + 2 * wall, inner_size[1] + 2 * wall];
 pcb_origin = [wall + pcb_fit_clearance / 2, wall + pcb_fit_clearance / 2];
+
+skirt_y0 = (outer_size[1] - skirt_width) / 2;
+skirt_hole_y_positions = [
+    outer_size[1] / 2 - skirt_hole_spacing / 2,
+    outer_size[1] / 2 + skirt_hole_spacing / 2
+];
+skirt_hole_x_positions = [
+    -skirt_extension + (skirt_extension - skirt_gusset_depth) / 2,
+    outer_size[0] + skirt_gusset_depth +
+        (skirt_extension - skirt_gusset_depth) / 2
+];
 
 pcb_bottom_z = floor_thickness + pcb_under_clearance;
 pcb_top_z = pcb_bottom_z + pcb_size[2];
@@ -147,6 +167,15 @@ ribbon_exit_y0 = mount_holes[1][1] + lid_post_d / 2 - ribbon_post_end_overlap;
 ribbon_exit_y1 = mount_holes[3][1] - lid_post_d / 2 + ribbon_post_end_overlap;
 
 assert(abs(wall - 2.70) < 0.001, "Rear wall must remain 2.7 mm");
+assert(abs(skirt_extension - 15.0) < 0.001 &&
+       abs(skirt_width - 60.0) < 0.001,
+       "Each mounting skirt must extend 15 mm and remain 60 mm wide");
+assert(abs(skirt_thickness - floor_thickness) < 0.001,
+       "Mounting skirts must match the base-floor thickness");
+assert(abs(skirt_extension - skirt_gusset_depth - 10.0) < 0.001,
+       "The flat mounting zone outside each gusset must remain 10 mm deep");
+assert(abs(skirt_hole_spacing - 50.0) < 0.001,
+       "M2 mounting-hole centers must remain 50 mm apart");
 assert(abs(antenna_hole_d - 7.17) < 0.001, "Antenna holes must remain 7.17 mm");
 assert(base_peg_d < mount_hole_d, "Base pegs must pass through the PCB holes");
 assert(lid_socket_d > base_peg_d, "Lid sockets need glue and print clearance");
@@ -192,6 +221,54 @@ module rounded_prism(size, height, radius) {
 module rounded_xy_cutout(center, size, height, radius, z) {
     translate([center[0] - size[0] / 2, center[1] - size[1] / 2, z])
         rounded_prism(size, height, radius);
+}
+
+module triangular_prism_y(points, y0, length) {
+    translate([0, y0, 0])
+        rotate([-90, 0, 0])
+            linear_extrude(height = length)
+                polygon(points);
+}
+
+module mounting_skirts() {
+    difference() {
+        union() {
+            // Flat 15 x 60 mm wings, matching the closed-floor thickness.
+            translate([-skirt_extension, skirt_y0, 0])
+                cube([skirt_extension, skirt_width, skirt_thickness]);
+            translate([outer_size[0], skirt_y0, 0])
+                cube([skirt_extension, skirt_width, skirt_thickness]);
+
+            // Continuous right-triangle gussets occupy the inner 5 mm.
+            triangular_prism_y(
+                [
+                    [-skirt_gusset_depth, skirt_thickness],
+                    [0, skirt_thickness],
+                    [0, skirt_thickness + skirt_gusset_height]
+                ],
+                skirt_y0,
+                skirt_width
+            );
+            triangular_prism_y(
+                [
+                    [outer_size[0], skirt_thickness],
+                    [outer_size[0] + skirt_gusset_depth, skirt_thickness],
+                    [outer_size[0], skirt_thickness + skirt_gusset_height]
+                ],
+                skirt_y0,
+                skirt_width
+            );
+        }
+
+        // Two M2 clearance holes per skirt, centered in the outer 10 mm zone.
+        for (x = skirt_hole_x_positions)
+            for (y = skirt_hole_y_positions)
+                translate([x, y, -epsilon])
+                    cylinder(
+                        h = skirt_thickness + 2 * epsilon,
+                        d = skirt_hole_d
+                    );
+    }
 }
 
 module front_service_cutouts() {
@@ -279,6 +356,7 @@ module base_shell_body() {
 module base_shell() {
     union() {
         base_shell_body();
+        mounting_skirts();
 
         for (p = mount_holes) {
             // The shoulder supports the PCB without entering its component keep-out.
@@ -393,7 +471,8 @@ module lid_print_orientation() {
 
 module print_set() {
     base_shell();
-    translate([outer_size[0] + print_gap, 0, 0])
+    // Stack parts along Y so the widened base and lid remain separated.
+    translate([0, outer_size[1] + print_gap, 0])
         lid_print_orientation();
 }
 
