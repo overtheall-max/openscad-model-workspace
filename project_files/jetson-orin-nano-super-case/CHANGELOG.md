@@ -1,5 +1,11 @@
 # Change log
 
+## 2026-07-23 - Antenna, ribbon-slot, and cooling-opening adjustment
+
+- Enlarged both rear antenna holes from 6.17 mm to 7.17 mm without moving their centers.
+- Kept the top ribbon-slot width at 7.5 mm and lengthened it by 1 mm toward each right support post, 2 mm total.
+- Moved all four heatsink-opening edges inward by 2 mm, reducing the centered opening from 63.6 x 44.6 mm to 59.6 x 40.6 mm.
+
 ## 2026-07-23 - Reduced upper rear-service opening
 
 - Halved only the upper-shell height of the rear pin-header/ribbon service opening.

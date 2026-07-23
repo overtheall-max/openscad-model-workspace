@@ -20,7 +20,7 @@ This directory contains a parameterized, full six-face OpenSCAD enclosure for th
 - Fan center: extracted from the official P3766 STEP assembly transform
 - Complete heatsink/fan assembly footprint used for the top fit: 63 x 44 mm
 - Rear wall: 2.70 mm
-- Rear antenna bulkhead holes: 6.17 mm diameter
+- Rear antenna bulkhead holes: 7.17 mm diameter
 
 The main mounting-hole centers, expressed from the PCB lower-left corner, are:
 
@@ -35,9 +35,9 @@ With the front I/O facing the user, X runs left-to-right and Y runs front-to-bac
 
 - Front: separate local windows for the DC barrel jack, DisplayPort, four USB-A ports, RJ45, and USB-C. The USB-C opening is only 9 mm high rather than sharing the RJ45 height. The windows include clearance for molded cable plugs but do not remove the entire wall.
 - Left: a service window for both CSI ribbon connectors; its upper-shell opening height is half the previous design. There is no DC opening on this wall.
-- Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph; only its upper-shell portion is reduced to half the previous height, while the lower-shell opening remains unchanged. Two 6.17 mm threaded antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
+- Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph; only its upper-shell portion is reduced to half the previous height, while the lower-shell opening remains unchanged. Two 7.17 mm antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
 - Right: the wall remains closed.
-- Top: the complete 63 x 44 mm heatsink/fan assembly embeds through a 63.6 x 44.6 mm opening. The right-side ribbon/40-pin opening is a 7.5 mm internal slot centered directly between the two right support posts; its ends stop 0.5 mm beyond each post edge, so the right roof edge, side wall, and posts remain closed.
+- Top: the centered heatsink opening is 59.6 x 40.6 mm after moving all four former 63.6 x 44.6 mm opening edges inward by 2 mm. The right-side ribbon/40-pin opening remains 7.5 mm wide and is lengthened by 1 mm toward each right support post, 2 mm total.
 - Bottom: fully closed.
 
 The exterior top surface and cooling-assembly top share the exact same Z plane, 30.50 mm above the PCB bottom. The inner footprint now adds 0.80 mm clearance per PCB side, 0.50 mm more than the preceding revision; the outer dimensions expand by the same amount while all wall thicknesses remain unchanged.
@@ -48,7 +48,7 @@ Four solid 2.35 mm base pegs grow from 6.4 mm PCB-support shoulders. The pegs pa
 
 There are no opposing screws and no exterior screw holes. If later disassembly is required, cut the glued printed joint rather than forcing the PCB.
 
-The rear antenna centers sit 19.5 mm above the PCB top. The 6.17 mm dimension applies only to the narrow threaded wall section; the placement mockup uses a 10 mm diameter external antenna body. The threaded sections clear the conservative heatsink envelope, and the full 10 mm external bodies retain at least 5 mm of solid rear wall above the header opening.
+The rear antenna centers sit 19.5 mm above the PCB top and remain unchanged. The wall openings are 7.17 mm diameter, while the placement mockup uses a 10 mm diameter external antenna body. The full 10 mm external bodies retain at least 5 mm of solid rear wall above the header opening.
 
 ## OpenSCAD use
 
@@ -63,7 +63,7 @@ part = "assembly";  // assembled visual and collision check
 
 The combined STL occupies 226 x 86 mm and places both parts flat on the same build plate. The lid prints exterior-face-down so its walls and blind-socket posts grow upward without support. Suggested first print: PLA or PETG, 0.20 mm layers, 4 perimeters, 25-35% infill.
 
-Before applying adhesive, dry-fit the PCB, check all cable plugs, confirm the CSI latch is reachable, and verify the two 6.17 mm antenna bulkheads. Printer shrinkage and aftermarket cable shells can vary.
+Before applying adhesive, dry-fit the PCB, check all cable plugs, confirm the CSI latch is reachable, and verify the two 7.17 mm antenna bulkheads. Printer shrinkage and aftermarket cable shells can vary.
 
 Export updated parts from the workspace root, always overwriting the stable filenames:
 

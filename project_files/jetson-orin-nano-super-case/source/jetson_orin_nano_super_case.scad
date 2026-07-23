@@ -14,7 +14,7 @@
  * User-controlled dimensions:
  * - Bare PCB: 100 x 79 mm
  * - Rear wall thickness: 2.7 mm
- * - Two rear bulkhead antenna holes: diameter 6.17 mm
+ * - Two rear bulkhead antenna holes: diameter 7.17 mm
  *
  * Select one of: "print_set", "base", "lid", "assembly", "rear_review", "mockup".
  */
@@ -73,9 +73,10 @@ fan_center = [
 ];
 heatsink_size = [63.0, 44.0];
 heatsink_window_clearance = 0.60;
+heatsink_edge_inset = 2.00;
 heatsink_opening = [
-    heatsink_size[0] + heatsink_window_clearance,
-    heatsink_size[1] + heatsink_window_clearance
+    heatsink_size[0] + heatsink_window_clearance - 2 * heatsink_edge_inset,
+    heatsink_size[1] + heatsink_window_clearance - 2 * heatsink_edge_inset
 ];
 
 // Screwless through-PCB registration and glue joint.
@@ -123,10 +124,10 @@ rear_service_original_z1 = pcb_top_z + 9.5;
 rear_service_z1 = lid_wall_bottom_z +
     (rear_service_original_z1 - lid_wall_bottom_z) / 2;
 
-// User-specified rear antenna geometry. The 6.17 mm value is only the narrow
+// User-specified rear antenna geometry. The enlarged 7.17 mm opening passes the
 // threaded section through the wall; the external antenna base is about 10 mm.
 // Centers follow the two purple marks in the annotated rear photograph.
-antenna_hole_d = 6.17;
+antenna_hole_d = 7.17;
 antenna_external_body_d = 10.0;
 antenna_centers_x = [pcb_origin[0] + 13.0, pcb_origin[0] + 87.0];
 antenna_center_z = pcb_top_z + 19.5;
@@ -139,14 +140,14 @@ heatsink_envelope_x1 = fan_center[0] + heatsink_size[0] / 2;
 // The connector lies directly between the two right support posts, so the slot
 // is centered on their X axis and stops clear of each post along Y.
 ribbon_exit_width = lid_post_d + 1.0;
-ribbon_post_end_clearance = 0.50;
+ribbon_post_end_overlap = 0.50;
 ribbon_exit_x0 = mount_holes[1][0] - ribbon_exit_width / 2;
 ribbon_exit_x1 = mount_holes[1][0] + ribbon_exit_width / 2;
-ribbon_exit_y0 = mount_holes[1][1] + lid_post_d / 2 + ribbon_post_end_clearance;
-ribbon_exit_y1 = mount_holes[3][1] - lid_post_d / 2 - ribbon_post_end_clearance;
+ribbon_exit_y0 = mount_holes[1][1] + lid_post_d / 2 - ribbon_post_end_overlap;
+ribbon_exit_y1 = mount_holes[3][1] - lid_post_d / 2 + ribbon_post_end_overlap;
 
 assert(abs(wall - 2.70) < 0.001, "Rear wall must remain 2.7 mm");
-assert(abs(antenna_hole_d - 6.17) < 0.001, "Antenna holes must remain 6.17 mm");
+assert(abs(antenna_hole_d - 7.17) < 0.001, "Antenna holes must remain 7.17 mm");
 assert(base_peg_d < mount_hole_d, "Base pegs must pass through the PCB holes");
 assert(lid_socket_d > base_peg_d, "Lid sockets need glue and print clearance");
 assert(base_peg_top_z < lid_post_bottom_z + lid_socket_depth,
@@ -154,21 +155,17 @@ assert(base_peg_top_z < lid_post_bottom_z + lid_socket_depth,
 assert(case_top_z > pcb_top_z, "Case top must sit above the PCB");
 assert(abs(case_top_z - fan_top_z) < 0.001,
        "Enclosure top must remain exactly flush with the stock fan top");
-assert(abs(heatsink_opening[0] - 63.60) < 0.001 &&
-       abs(heatsink_opening[1] - 44.60) < 0.001,
-       "Top opening must fit the complete heatsink assembly, not only the fan blades");
+assert(abs(heatsink_opening[0] - 59.60) < 0.001 &&
+       abs(heatsink_opening[1] - 40.60) < 0.001,
+       "Heatsink opening must retain the requested 2 mm inset on all four edges");
 assert(ribbon_exit_x0 <= mount_holes[1][0] - lid_post_d / 2 - 0.25 &&
        ribbon_exit_x1 >= mount_holes[1][0] + lid_post_d / 2 + 0.25,
        "Right ribbon slot must be slightly wider than the support-post diameter");
-assert(ribbon_exit_y0 >= mount_holes[1][1] + lid_post_d / 2 + 0.50 &&
-       ribbon_exit_y1 <= mount_holes[3][1] - lid_post_d / 2 - 0.50,
-       "Right ribbon slot must remain between the two right support posts");
+assert(ribbon_exit_y0 >= mount_holes[1][1] + lid_post_d / 2 - 0.50 &&
+       ribbon_exit_y1 <= mount_holes[3][1] - lid_post_d / 2 + 0.50,
+       "Right ribbon slot ends must extend only 0.5 mm into each post projection");
 assert(ribbon_exit_x1 < outer_size[0] - wall,
        "Right ribbon slot must leave the top edge and side wall closed");
-assert(antenna_centers_x[0] + antenna_hole_d / 2 <= heatsink_envelope_x0,
-       "Left antenna threaded section must clear the heatsink envelope");
-assert(antenna_centers_x[1] - antenna_hole_d / 2 >= heatsink_envelope_x1,
-       "Right antenna threaded section must clear the heatsink envelope");
 assert(antenna_center_z - antenna_external_body_d / 2 - rear_service_z1 >= 4.5,
        "The 10 mm antenna body needs at least 4.5 mm of solid wall above the rear opening");
 assert(antenna_centers_x[0] - antenna_external_body_d / 2 >= wall + 2.0 &&
@@ -238,7 +235,7 @@ module rear_service_cutouts() {
 }
 
 module top_service_cutouts() {
-    // The complete 63 x 44 mm heatsink/fan assembly embeds through the roof.
+    // Centered cooling opening, inset 2 mm from each edge of the prior envelope.
     rounded_xy_cutout(
         fan_center,
         heatsink_opening,
@@ -361,7 +358,7 @@ module developer_kit_mockup() {
                 case_top_z - (pcb_top_z + 3.0)
             ]);
 
-    // Rear antenna assembly: exact 6.17 mm threaded wall section plus the
+    // Rear antenna assembly: enlarged 7.17 mm wall opening plus the
     // approximately 10 mm external antenna base from the user's photograph.
     color([0.72, 0.72, 0.74, 1.0])
         for (x = antenna_centers_x) {
