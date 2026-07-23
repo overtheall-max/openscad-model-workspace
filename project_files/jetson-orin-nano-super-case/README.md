@@ -70,6 +70,7 @@ Export updated parts from the workspace root, always overwriting the stable file
 
 ```bash
 arch -arm64 /Applications/Utilities/OpenSCAD.app/Contents/MacOS/OpenSCAD \
+  --export-format binstl \
   -D 'part="print_set"' \
   -o current_stl/jetson_orin_nano_super_case_print_set.stl \
   project_files/jetson-orin-nano-super-case/source/jetson_orin_nano_super_case.scad

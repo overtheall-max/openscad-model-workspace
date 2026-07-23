@@ -1,5 +1,11 @@
 # Change log
 
+## 2026-07-23 - Re-exported current model as binary STL
+
+- Re-exported the unchanged combined print model as a 369 KB binary STL after the ASCII STL could not be opened in the user's target application.
+- Verified the fresh file by importing it back into OpenSCAD; all 7,560 triangles were read successfully.
+- Updated the live-export helper and documented command so future automatic STL exports remain binary.
+
 ## 2026-07-23 - Added left/right base mounting skirts
 
 - Added centered 15 x 60 mm mounting skirts to both sides of the base at the same 2.4 mm thickness as the closed floor.

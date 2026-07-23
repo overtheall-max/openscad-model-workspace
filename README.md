@@ -88,7 +88,7 @@ CHANGELOG.md           人类可读的改动记录
 
 1. 开始修改前把 `model_viewer/app/config.json` 的 `projectStatus` 设为 `working`，然后只编辑 `project_files/<CURRENT_PROJECT>/source/` 中的源文件。
 2. 先生成预览并检查尺寸、装配间隙和流形状态。
-3. 使用固定文件名覆盖 `current_stl/` 中对应 STL。
+3. 使用固定文件名和 OpenSCAD `--export-format binstl` 覆盖 `current_stl/` 中对应 STL，避免自动导出退回体积更大、兼容性较差的 ASCII STL。
 4. 在项目 `CHANGELOG.md` 中记录变更原因、尺寸变化和验证结果。
 5. 完成验证并确认定稿后，把 `projectStatus` 设为 `completed`；若仍需修改则保持 `working`。
 6. 用 `git diff --stat`、`git status --short` 检查范围。

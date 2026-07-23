@@ -170,9 +170,10 @@ def render_live_outputs(export_config: dict) -> None:
             "/usr/bin/arch",
             "-arm64",
             str(executable),
-            "-o",
-            str(temporary),
         ]
+        if output.suffix.lower() == ".stl":
+            command.extend(["--export-format", "binstl"])
+        command.extend(["-o", str(temporary)])
         for key, value in output_config.get("defines", {}).items():
             command.extend(["-D", f"{key}={scad_literal(value)}"])
         command.append(str(source))
