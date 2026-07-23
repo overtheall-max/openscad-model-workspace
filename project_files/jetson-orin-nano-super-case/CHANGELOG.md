@@ -1,5 +1,10 @@
 # Change log
 
+## 2026-07-23 - Corrected mounting-gusset orientation
+
+- Flipped both continuous triangular skirt gussets from below the base to the top surface.
+- The vertical triangle edge now joins the enclosure side wall and the slope descends outward across the inner 5 mm of each skirt.
+
 ## 2026-07-23 - Re-exported current model as binary STL
 
 - Re-exported the unchanged combined print model as a 369 KB binary STL after the ASCII STL could not be opened in the user's target application.

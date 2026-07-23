@@ -224,8 +224,8 @@ module rounded_xy_cutout(center, size, height, radius, z) {
 }
 
 module triangular_prism_y(points, y0, length) {
-    translate([0, y0, 0])
-        rotate([-90, 0, 0])
+    translate([0, y0 + length, 0])
+        rotate([90, 0, 0])
             linear_extrude(height = length)
                 polygon(points);
 }
