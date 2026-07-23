@@ -134,11 +134,14 @@ heatsink_envelope_x0 = fan_center[0] - heatsink_size[0] / 2;
 heatsink_envelope_x1 = fan_center[0] + heatsink_size[0] / 2;
 
 // Top-right cable exit above the right-side 40-pin/ribbon breakout region.
-// It remains an internal roof slot: the right edge strip and support posts stay closed.
-ribbon_exit_x0 = pcb_origin[0] + 81.0;
-ribbon_exit_x1 = pcb_origin[0] + 92.0;
-ribbon_exit_y0 = pcb_origin[1] + 16.0;
-ribbon_exit_y1 = pcb_origin[1] + 69.0;
+// The connector lies directly between the two right support posts, so the slot
+// is centered on their X axis and stops clear of each post along Y.
+ribbon_exit_width = lid_post_d + 1.0;
+ribbon_post_end_clearance = 0.50;
+ribbon_exit_x0 = mount_holes[1][0] - ribbon_exit_width / 2;
+ribbon_exit_x1 = mount_holes[1][0] + ribbon_exit_width / 2;
+ribbon_exit_y0 = mount_holes[1][1] + lid_post_d / 2 + ribbon_post_end_clearance;
+ribbon_exit_y1 = mount_holes[3][1] - lid_post_d / 2 - ribbon_post_end_clearance;
 
 assert(abs(wall - 2.70) < 0.001, "Rear wall must remain 2.7 mm");
 assert(abs(antenna_hole_d - 6.17) < 0.001, "Antenna holes must remain 6.17 mm");
@@ -152,8 +155,12 @@ assert(abs(case_top_z - fan_top_z) < 0.001,
 assert(abs(heatsink_opening[0] - 63.60) < 0.001 &&
        abs(heatsink_opening[1] - 44.60) < 0.001,
        "Top opening must fit the complete heatsink assembly, not only the fan blades");
-assert(ribbon_exit_x1 <= mount_holes[1][0] - lid_post_d / 2 - 0.50,
-       "Right ribbon slot must not expose either right support post");
+assert(ribbon_exit_x0 <= mount_holes[1][0] - lid_post_d / 2 - 0.25 &&
+       ribbon_exit_x1 >= mount_holes[1][0] + lid_post_d / 2 + 0.25,
+       "Right ribbon slot must be slightly wider than the support-post diameter");
+assert(ribbon_exit_y0 >= mount_holes[1][1] + lid_post_d / 2 + 0.50 &&
+       ribbon_exit_y1 <= mount_holes[3][1] - lid_post_d / 2 - 0.50,
+       "Right ribbon slot must remain between the two right support posts");
 assert(ribbon_exit_x1 < outer_size[0] - wall,
        "Right ribbon slot must leave the top edge and side wall closed");
 assert(antenna_centers_x[0] + antenna_hole_d / 2 <= heatsink_envelope_x0,
@@ -238,7 +245,7 @@ module top_service_cutouts() {
         top_inner_z - epsilon
     );
 
-    // Internal ribbon slot: do not cut through the right roof edge or side wall.
+    // Internal ribbon slot centered between the two right support posts.
     exit_size = [
         ribbon_exit_x1 - ribbon_exit_x0,
         ribbon_exit_y1 - ribbon_exit_y0

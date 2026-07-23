@@ -1,5 +1,11 @@
 # Change log
 
+## 2026-07-23 - Corrected main-ribbon top-slot alignment
+
+- Moved the right-side main-ribbon top slot from beside the support posts onto the actual connector line directly between them.
+- Set the slot width to 7.5 mm, only 1.0 mm wider than the 6.5 mm support posts.
+- Stopped both slot ends 0.5 mm clear of the support-post edges while keeping the right roof edge and side wall closed.
+
 ## 2026-07-23 - Cooling fit, port-height, and clearance correction
 
 - Halved only the upper-shell height of the left CSI service opening while retaining its span across both CSI connectors.
