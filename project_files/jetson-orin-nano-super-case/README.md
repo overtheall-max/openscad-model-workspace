@@ -35,7 +35,7 @@ With the front I/O facing the user, X runs left-to-right and Y runs front-to-bac
 
 - Front: separate local windows for the DC barrel jack, DisplayPort, four USB-A ports, RJ45, and USB-C. The USB-C opening is only 9 mm high rather than sharing the RJ45 height. The windows include clearance for molded cable plugs but do not remove the entire wall.
 - Left: a service window for both CSI ribbon connectors; its upper-shell opening height is half the previous design. There is no DC opening on this wall.
-- Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph. Two 6.17 mm threaded antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
+- Rear: a 40 mm wide low service window covers only the horizontal pin-header span marked in red on the user's annotated photograph; only its upper-shell portion is reduced to half the previous height, while the lower-shell opening remains unchanged. Two 6.17 mm threaded antenna holes sit near the two purple marks at PCB-local X=13 and 87 mm.
 - Right: the wall remains closed.
 - Top: the complete 63 x 44 mm heatsink/fan assembly embeds through a 63.6 x 44.6 mm opening. The right-side ribbon/40-pin opening is a 7.5 mm internal slot centered directly between the two right support posts; its ends stop 0.5 mm beyond each post edge, so the right roof edge, side wall, and posts remain closed.
 - Bottom: fully closed.

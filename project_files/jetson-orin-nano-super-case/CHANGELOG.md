@@ -1,5 +1,10 @@
 # Change log
 
+## 2026-07-23 - Reduced upper rear-service opening
+
+- Halved only the upper-shell height of the rear pin-header/ribbon service opening.
+- Kept the lower-shell opening, 40 mm opening width, and both antenna holes unchanged.
+
 ## 2026-07-23 - Corrected main-ribbon top-slot alignment
 
 - Moved the right-side main-ribbon top slot from beside the support posts onto the actual connector line directly between them.

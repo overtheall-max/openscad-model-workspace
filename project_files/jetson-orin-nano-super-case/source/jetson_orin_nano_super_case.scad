@@ -119,7 +119,9 @@ csi_window_z1 = lid_wall_bottom_z +
 rear_service_x0 = pcb_origin[0] + 18.0;
 rear_service_x1 = pcb_origin[0] + 58.0;
 rear_service_z0 = pcb_bottom_z - 0.50;
-rear_service_z1 = pcb_top_z + 9.5;
+rear_service_original_z1 = pcb_top_z + 9.5;
+rear_service_z1 = lid_wall_bottom_z +
+    (rear_service_original_z1 - lid_wall_bottom_z) / 2;
 
 // User-specified rear antenna geometry. The 6.17 mm value is only the narrow
 // threaded section through the wall; the external antenna base is about 10 mm.
