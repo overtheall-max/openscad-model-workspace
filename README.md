@@ -2,7 +2,7 @@
 
 > 本文件首先写给接手此目录的下一个 Agent。开始任何建模、导出、归档或 Git 操作前，必须完整阅读并遵守本文件。
 
-`CURRENT_PROJECT: jetson-orin-nano-super-case`
+`CURRENT_PROJECT: none`
 
 ## 根目录结构
 
@@ -84,6 +84,15 @@ CHANGELOG.md           人类可读的改动记录
 
 如果当前项目还没有任何 STL，仍应创建其项目资料目录和变更记录，但无需创建空的历史项目子文件夹。
 
+## 接到“归档当前项目”请求时
+
+1. 检查 `CURRENT_PROJECT`、Git 状态和 `current_stl/` 内容。
+2. 创建 `historical_stl/<项目 slug>/`，将最终 STL 移入并采用简短、明确的文件名。
+3. `current_stl/` 中的 3MF、切片或其他非 STL 文件不得放入历史 STL 目录；应保留到 `project_files/<项目 slug>/process/` 的对应子目录。
+4. 在项目 README 和 `CHANGELOG.md` 中记录完成状态与归档位置。
+5. 把 `CURRENT_PROJECT` 设为 `none`，将 `model_viewer/app/config.json` 的 `projectStatus` 设为 `completed` 并关闭自动导出。
+6. 提交并推送归档改动；可打印里程碑应创建并推送 Git tag。
+
 ## 更新当前项目设计时
 
 1. 开始修改前把 `model_viewer/app/config.json` 的 `projectStatus` 设为 `working`，然后只编辑 `project_files/<CURRENT_PROJECT>/source/` 中的源文件。
@@ -115,10 +124,10 @@ Git/GitHub 可以实现“工作区只显示最新版、旧版只存在历史记
 
 ## 当前项目
 
-- 项目 slug：`jetson-orin-nano-super-case`
-- 源码：`project_files/jetson-orin-nano-super-case/source/`
-- 项目说明：`project_files/jetson-orin-nano-super-case/README.md`
-- 当前打印文件：`current_stl/`
+- 当前没有正在制作的项目。
+- 最近归档项目：`jetson-orin-nano-super-case`
+- 历史打印文件：`historical_stl/jetson-orin-nano-super-case/print-set.stl`
+- 项目资料：`project_files/jetson-orin-nano-super-case/`
 - 实时查看器：`model_viewer/index.html`
 - Safari 完整模式：`model_viewer/open-in-safari.command`
 

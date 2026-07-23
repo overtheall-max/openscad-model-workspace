@@ -1,11 +1,14 @@
 # Jetson Orin Nano Super Developer Kit enclosure
 
+**Status:** Completed and archived on 2026-07-23.
+
 This directory contains a parameterized, full six-face OpenSCAD enclosure for the NVIDIA Jetson Orin Nano Super Developer Kit. The base and lid remain separate physical parts, but the default STL places both on one print plate.
 
 ## Files
 
 - `source/jetson_orin_nano_super_case.scad` - editable source model
-- `../../current_stl/jetson_orin_nano_super_case_print_set.stl` - current base and lid in one print-ready STL
+- `../../historical_stl/jetson-orin-nano-super-case/print-set.stl` - archived final base and lid in one print-ready STL
+- `process/slicer/print-set.3mf` - preserved slicer project/process file
 - `process/previews/jetson_orin_nano_super_case_v2_assembly.png` - assembled preview
 - `process/previews/jetson_orin_nano_super_case_v2_rear_review.png` - rear antenna/header clearance review
 - `process/previews/jetson_orin_nano_super_case_v2_print_set.png` - one-plate print preview
@@ -66,17 +69,17 @@ The combined STL occupies 137 x 184 mm and places the widened base and lid one a
 
 Before applying adhesive, dry-fit the PCB, check all cable plugs, confirm the CSI latch is reachable, and verify the two 7.17 mm antenna bulkheads. Printer shrinkage and aftermarket cable shells can vary.
 
-Export updated parts from the workspace root, always overwriting the stable filenames:
+If this archived project is resumed, first restore it as `CURRENT_PROJECT`, re-enable the viewer export configuration, and export using a stable short filename:
 
 ```bash
 arch -arm64 /Applications/Utilities/OpenSCAD.app/Contents/MacOS/OpenSCAD \
   --export-format binstl \
   -D 'part="print_set"' \
-  -o current_stl/jetson_orin_nano_super_case_print_set.stl \
+  -o current_stl/print-set.stl \
   project_files/jetson-orin-nano-super-case/source/jetson_orin_nano_super_case.scad
 ```
 
-Do not create version-suffixed STL filenames. Record design history in `CHANGELOG.md` and Git commits.
+Do not modify the archived STL in place. Resume the project through the current-project workflow, then record further design history in `CHANGELOG.md` and Git commits.
 
 ## NVIDIA sources
 

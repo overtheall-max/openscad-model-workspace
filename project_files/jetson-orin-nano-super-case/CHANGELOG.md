@@ -1,5 +1,12 @@
 # Change log
 
+## 2026-07-23 - Project completed and archived
+
+- Marked the Jetson Orin Nano Super enclosure project complete.
+- Moved the final binary print-set STL to `historical_stl/jetson-orin-nano-super-case/print-set.stl`.
+- Preserved the user-generated 3MF at `process/slicer/print-set.3mf`.
+- Cleared the active project pointer and disabled live OpenSCAD export until a new project starts.
+
 ## 2026-07-23 - Reduced lid-post diameter
 
 - Reduced all four lid support posts from 6.5 mm to 5.4 mm diameter.
